@@ -1,6 +1,6 @@
 {
     "name": "Java & Spring Boot Development",
-    "context": "..",
+    "context": ".",
     "dockerFile": "dockerfile",
     "settings": { 
         "terminal.integrated.shell.linux": "/bin/bash"
