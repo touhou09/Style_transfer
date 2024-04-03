@@ -1,0 +1,13 @@
+fastapi_project/
+│
+├── app/
+│   ├── __init__.py
+│   ├── main.py           # 애플리케이션 생성 및 설정
+│   ├── dependencies.py   # 의존성 관리 파일
+│   ├── models.py         # 데이터 모델 정의
+│   ├── schemas.py        # Pydantic 스키마 정의
+│   └── routers/
+│       ├── __init__.py
+│       └── items.py      # 아이템 관련 라우터
+│
+└── requirements.txt      # 의존성 목록
