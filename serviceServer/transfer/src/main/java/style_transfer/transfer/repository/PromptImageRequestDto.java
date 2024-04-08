@@ -1,6 +1,6 @@
 package style_transfer.transfer.repository;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
 import java.util.List;
 
 /**
@@ -10,13 +10,13 @@ import java.util.List;
 @Setter
 public class PromptImageRequestDto {
     private String id; // 프롬프트 입력 순번
-    private List<AbstractPromptItem> items; // 추상화된 텍스트와 이미지 묶음
+    private List<PromptItem> items; // 텍스트와 이미지 묶음
 
-    public abstract static class AbstractPromptItem {
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PromptItem {
         private String promptText; // 프롬프트 텍스트
-
-        // 추상 메서드로 이미지 데이터에 대한 접근자를 정의
-        public abstract String getImageData();
-        public abstract void setImageData(String imageData);
+        private String exampleImage; // 예시 이미지(Base64 인코딩된 데이터)
     }
 }
