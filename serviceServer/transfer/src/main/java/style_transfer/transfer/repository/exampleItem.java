@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+// 프롬프트와 예시 이미지를 묶는 model
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

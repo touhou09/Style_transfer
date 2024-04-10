@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+// 예시 이미지 가져오는 dto
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
