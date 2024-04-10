@@ -10,6 +10,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class imageResponseDto {
-    private String token;
+    // private String token;
     private List<image> images;
 }
