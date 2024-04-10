@@ -9,14 +9,12 @@ import style_transfer.transfer.repository.tokenRequestDto;
 
 @Service
 public class exampleImageServe {
-
     private final WebClient webClient;
 
     @Autowired
     public exampleImageServe(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.baseUrl("http://localhost:8000").build();
     }
-
     public Mono<imageResponseDto> getImageResponse(String text, String token) {
         tokenRequestDto requestDto = new tokenRequestDto(token, text);
 
@@ -26,5 +24,4 @@ public class exampleImageServe {
                 .retrieve()
                 .bodyToMono(imageResponseDto.class);
     }
-
 }
