@@ -20,12 +20,12 @@ class generatedItem(BaseModel):
 
 # 최초 예시이미지 제시 시 사용하는 prompt 전달 dto 
 class TokenRequestDto(BaseModel):
-    token: str
+    # token: str
     text: str
 
 # 예시 이미지 전달 dto
 class ImageResponseDto(BaseModel):
-    token: str
+    # token: str
     images: List[Image]
 
 # 예시 이미지와 프롬프트를 전달하는 dto
