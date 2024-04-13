@@ -15,3 +15,21 @@ http://localhost:8080/swagger-ui/index.html
 ## 현재 구현해야하는 기능  
 - 프롬프트 기반으로 예시 이미지 탐색
 - 예시 이미지 + 프롬프트 텍스트 기반으로 생성된 이미지 반환(basicPrompt 브랜치)
+
+```json
+{
+    "projectId": "12345",
+    "exampleItems": [
+        {
+            "id": "item1",
+            "promptText": "이미지 설명 예시 1",
+            "exampleImage": "Base64인코딩된이미지데이터1"
+        },
+        {
+            "id": "item2",
+            "promptText": "이미지 설명 예시 2",
+            "exampleImage": "Base64인코딩된이미지데이터2"
+        }
+    ]
+}
+```
