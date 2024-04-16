@@ -16,6 +16,9 @@ http://localhost:8080/swagger-ui/index.html
 - 프롬프트 기반으로 예시 이미지 탐색
 - 예시 이미지 + 프롬프트 텍스트 기반으로 생성된 이미지 반환(basicPrompt 브랜치)
 
+http://localhost:8080/api/generate-images
+
+**input**
 ```json
 {
     "projectId": "12345",
@@ -32,4 +35,23 @@ http://localhost:8080/swagger-ui/index.html
         }
     ]
 }
+```
+**output**
+```json
+{
+    "id": "12345",
+    "generatedItems": [
+        {
+            "id": "item1",
+            "promptText": "이미지 설명 예시 1",
+            "generatedImage": "Base64_Encoded_Generated_Image_Data_For_이미지 설명 예시 1"
+        },
+        {
+            "id": "item2",
+            "promptText": "이미지 설명 예시 2",
+            "generatedImage": "Base64_Encoded_Generated_Image_Data_For_이미지 설명 예시 2"
+        }
+    ]
+}
+
 ```
