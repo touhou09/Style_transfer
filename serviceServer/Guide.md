@@ -23,7 +23,7 @@ http://localhost:8080/api/generate-images
 {
   "projectId": "12345",
   "exampleImage": "Base64인코딩된이미지데이터1",
-  "exampleItems": [
+  "basicItems": [
     {
       "index": "item1",
       "promptText": "이미지 설명 예시 1"
