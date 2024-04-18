@@ -21,37 +21,35 @@ http://localhost:8080/api/generate-images
 **input**
 ```json
 {
-    "projectId": "12345",
-    "exampleItems": [
-        {
-            "id": "item1",
-            "promptText": "이미지 설명 예시 1",
-            "exampleImage": "Base64인코딩된이미지데이터1"
-        },
-        {
-            "id": "item2",
-            "promptText": "이미지 설명 예시 2",
-            "exampleImage": "Base64인코딩된이미지데이터2"
-        }
-    ]
+  "projectId": "12345",
+  "exampleImage": "Base64인코딩된이미지데이터1",
+  "exampleItems": [
+    {
+      "index": "item1",
+      "promptText": "이미지 설명 예시 1"
+    },
+    {
+      "index": "item2",
+      "promptText": "이미지 설명 예시 2"
+    }
+  ]
 }
 ```
 **output**
 ```json
 {
-    "id": "12345",
-    "generatedItems": [
-        {
-            "id": "item1",
-            "promptText": "이미지 설명 예시 1",
-            "generatedImage": "Base64_Encoded_Generated_Image_Data_For_이미지 설명 예시 1"
-        },
-        {
-            "id": "item2",
-            "promptText": "이미지 설명 예시 2",
-            "generatedImage": "Base64_Encoded_Generated_Image_Data_For_이미지 설명 예시 2"
-        }
-    ]
+  "projectId": "12345",
+  "generatedItems": [
+    {
+      "index": "item1",
+      "promptText": "이미지 설명 예시 1",
+      "generatedImage": "Base64인코딩된이미지데이터1_generated_item1"
+    },
+    {
+      "index": "item2",
+      "promptText": "이미지 설명 예시 2",
+      "generatedImage": "Base64인코딩된이미지데이터1_generated_item2"
+    }
+  ]
 }
-
 ```
