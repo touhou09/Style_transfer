@@ -6,15 +6,14 @@ class Image(BaseModel):
     id: str
     data: str  # Base64 인코딩된 이미지 데이터
 
-# 프롬프트와 예시 이미지 전송 시 model
+# 프롬프트 항목 모델
 class exampleItem(BaseModel):
-    id: str  # 각 PromptItem의 고유 ID
+    index: str  # 각 PromptItem의 고유 Index, 변경: 'id'에서 'index'로 변경
     promptText: str  # 프롬프트 텍스트
-    exampleImage: str  # Base64 인코딩된 이미지 데이터
 
 # 프롬프트와 생성된 이미지 전송 시 model
 class generatedItem(BaseModel):
-    id: str  # 각 PromptItem의 고유 ID
+    index: str  # 각 PromptItem의 고유 ID
     promptText: str  # 프롬프트 텍스트
     generatedImage: str  # Base64 인코딩된 이미지 데이터
 
@@ -28,12 +27,13 @@ class ImageResponseDto(BaseModel):
     token: str
     images: List[Image]
 
-# 예시 이미지와 프롬프트를 전달하는 dto
+# 프롬프트 요청 DTO
 class PromptRequestDto(BaseModel):
     projectId: str  # 프로젝트 ID
-    exampleItems: List[exampleItem]  # 해당 프로젝트와 관련된 프롬프트 항목들
+    exampleImage: str  # 해당 프로젝트와 관련된 공통 이미지 데이터 (Base64 인코딩된 이미지 데이터)
+    exampleItems: List[exampleItem]  # 해당 프로젝트와 관련된 프롬프트 항목들 # 해당 프로젝트와 관련된 프롬프트 항목들
 
 # 생성한 이미지를 prompt와 함께 전달하는 dto
 class GeneratedImageResponseDto(BaseModel):
-    id: str
+    projectId: str
     generatedItems: List[generatedItem]
