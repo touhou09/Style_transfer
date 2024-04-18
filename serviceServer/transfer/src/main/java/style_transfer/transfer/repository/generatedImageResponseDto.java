@@ -10,6 +10,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class generatedImageResponseDto {
-    private String id;
+    private String projectId;
     private List<generatedItem> generatedItems;
 }

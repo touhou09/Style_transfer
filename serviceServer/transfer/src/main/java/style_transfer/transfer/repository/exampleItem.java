@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class exampleItem {
-    private String id;
-    private String promptText;
-    private String exampleImage; // Base64 인코딩된 이미지 데이터
+    private String index; // 각 항목의 고유 Index
+    private String promptText; // 프롬프트 텍스트
 }

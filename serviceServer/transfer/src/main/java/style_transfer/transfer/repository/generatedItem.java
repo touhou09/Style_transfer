@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class generatedItem {
-    private String id;
+    private String index;
     private String promptText;
     private String generatedImage; // Base64 인코딩된 이미지 데이터
 }

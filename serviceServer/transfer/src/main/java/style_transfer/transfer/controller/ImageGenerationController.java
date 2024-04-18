@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 import style_transfer.transfer.repository.generatedImageResponseDto;
 import style_transfer.transfer.repository.promptRequestDto;
 import style_transfer.transfer.service.ImageGenerationService;
@@ -19,7 +20,7 @@ public class ImageGenerationController {
     }
 
     @PostMapping("/api/generate-images")
-    public generatedImageResponseDto generateImages(@RequestBody promptRequestDto request) {
+    public Mono<generatedImageResponseDto> generateImages(@RequestBody promptRequestDto request) {
         return imageService.generateImages(request);
     }
 }
