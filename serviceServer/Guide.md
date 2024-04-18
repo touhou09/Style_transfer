@@ -14,7 +14,7 @@ http://localhost:8080/swagger-ui/index.html
 
 ## 현재 구현해야하는 기능  
 - 프롬프트 기반으로 예시 이미지 탐색 (exampleImage 브랜치)(modelServer측 완성하면 해결)
-
+http://localhost:8080/api/images
 
 
 
