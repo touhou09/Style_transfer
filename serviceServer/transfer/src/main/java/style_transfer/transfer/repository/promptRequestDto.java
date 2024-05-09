@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+// 프롬프트와 예시 이미지를 보내는 dto
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
