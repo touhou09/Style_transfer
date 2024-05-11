@@ -13,60 +13,18 @@ http://localhost:8080/swagger-ui/index.html
 ---
 
 ## 현재 구현해야하는 기능  
-<<<<<<< HEAD
+
 - 프롬프트 기반으로 예시 이미지 탐색
 - 예시 이미지 + 프롬프트 텍스트 기반으로 생성된 이미지 반환(basicPrompt 브랜치)
 
 http://localhost:8080/api/generate-images
-=======
+
 - 프롬프트 기반으로 예시 이미지 탐색 (exampleImage 브랜치)(modelServer측 완성하면 해결)
 http://localhost:8080/api/images
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> exampleImage
 
 **input**
 ```json
 {
-<<<<<<< HEAD
   "projectId": "12345",
   "exampleImage": "Base64인코딩된이미지데이터1",
   "basicItems": [
@@ -79,14 +37,11 @@ http://localhost:8080/api/images
       "promptText": "이미지 설명 예시 2"
     }
   ]
-=======
   "text": "string"
->>>>>>> exampleImage
 }
 ```
 **output**
 ```json
-<<<<<<< HEAD
 {
   "projectId": "12345",
   "generatedItems": [
@@ -103,7 +58,7 @@ http://localhost:8080/api/images
   ]
 }
 ```
-=======
+```json
 [
   {
     "id": "1",
@@ -116,4 +71,3 @@ http://localhost:8080/api/images
 ]
 
 ```
->>>>>>> exampleImage
