@@ -1,6 +1,7 @@
 package style_transfer.transfer.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -24,5 +25,16 @@ public class UserController {
             userRepository.save(user);
         }
         return "redirect:/user-profile";
+    }
+
+    @GetMapping("/user-profile")
+    public ResponseEntity<User> userProfile(@AuthenticationPrincipal OAuth2User principal) {
+        String email = principal.getAttribute("email");
+        User user = userRepository.findByEmail(email);
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
