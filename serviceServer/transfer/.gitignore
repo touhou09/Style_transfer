@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### gcp settings ###
+/src/main/resources/application.properties
