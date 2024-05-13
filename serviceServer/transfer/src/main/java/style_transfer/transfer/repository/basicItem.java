@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class basicItem {
-    private String index; // 각 항목의 고유 Index
+    private int index; // 각 항목의 고유 Index
     private String promptText; // 프롬프트 텍스트
 }
