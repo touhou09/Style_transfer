@@ -32,7 +32,6 @@ public class UserController {
         return "redirect:/user-profile";
     }
 
-
     @GetMapping("/user-profile")
     public ResponseEntity<User> userProfile(@AuthenticationPrincipal OAuth2User principal) {
         String email = principal.getAttribute("email");
