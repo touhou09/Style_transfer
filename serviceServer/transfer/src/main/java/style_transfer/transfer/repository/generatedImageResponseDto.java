@@ -12,5 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 public class generatedImageResponseDto {
     private String projectId;
+    private String exampleImage;
     private List<generatedItem> generatedItems;
 }
