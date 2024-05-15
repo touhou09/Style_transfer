@@ -12,5 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 public class imageResponseDto {
     // private String token;
+    private String summary;
     private List<image> images;
 }
