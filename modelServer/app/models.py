@@ -25,6 +25,7 @@ class TokenRequestDto(BaseModel):
 # 예시 이미지 전달 dto
 class ImageResponseDto(BaseModel):
     # token: str
+    summaryText : str
     images: List[Image]
 
 # 프롬프트 요청 DTO
