@@ -25,6 +25,6 @@ async def generate_images(request: PromptRequestDto) -> GeneratedImageResponseDt
     data = create_generated_images(request.basicItems, request.exampleImage)
     
     # 생성된 이미지와 함께 응답 객체 생성
-    response = GeneratedImageResponseDto(projectId=request.projectId, generatedItems=data)
+    response = GeneratedImageResponseDto(projectId=request.projectId, exampleImage=request.exampleImage, generatedItems=data)
     
     return response
