@@ -27,5 +27,4 @@ public class ImageGenerationService {
                 .bodyToMono(generatedImageResponseDto.class)
                 .onErrorMap(WebClientResponseException.class, ex -> new Exception("API call failed: " + ex.getMessage()));
     }
-
 }

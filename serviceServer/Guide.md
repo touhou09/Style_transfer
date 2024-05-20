@@ -12,62 +12,125 @@ http://localhost:8080/swagger-ui/index.html
 
 ---
 
-## 현재 구현해야하는 기능  
+## 현재 구현해야하는 기능
 
 - 프롬프트 기반으로 예시 이미지 탐색
-- 예시 이미지 + 프롬프트 텍스트 기반으로 생성된 이미지 반환(basicPrompt 브랜치)
-
-http://localhost:8080/api/generate-images
-
-- 프롬프트 기반으로 예시 이미지 탐색 (exampleImage 브랜치)(modelServer측 완성하면 해결)
-http://localhost:8080/api/images
+  http://localhost:8080/api/images?page=0&size=20  
+여기서 ?page={정수}&size={정수}
 
 **input**
 ```json
 {
-  "projectId": "12345",
-  "exampleImage": "Base64인코딩된이미지데이터1",
-  "basicItems": [
+  "text": "예시 텍스트입니다."
+}
+
+```
+
+**output**
+```json
+{
+  "content": [
     {
-      "index": "item1",
-      "promptText": "이미지 설명 예시 1"
+      "id": "1",
+      "data": "이미지 데이터 (Base64 인코딩)"
     },
     {
-      "index": "item2",
-      "promptText": "이미지 설명 예시 2"
+      "id": "2",
+      "data": "이미지 데이터 (Base64 인코딩)"
     }
-  ]
-  "text": "string"
+  ],
+  "pageable": {
+    "sort": {
+      "sorted": true,
+      "unsorted": false,
+      "empty": false
+    },
+    "offset": 0,
+    "pageNumber": 0,
+    "pageSize": 20,
+    "paged": true,
+    "unpaged": false
+  },
+  "last": false,
+  "totalPages": 5,
+  "totalElements": 100,
+  "size": 20,
+  "number": 0,
+  "sort": {
+    "sorted": true,
+    "unsorted": false,
+    "empty": false
+  },
+  "first": true,
+  "numberOfElements": 20,
+  "empty": false
 }
 ```
+pageable이 같이 전송되는 부분은 이해가 잘 안되서 일단 보류  
+
+projectId: 프로젝트의 고유 ID.  
+exampleImage: 예시 이미지의 Base64 인코딩된 데이터.  
+generatedItems: 여러 개의 생성된 아이템을 포함하는 리스트.  
+index: 아이템의 인덱스.  
+promptText: 프롬프트 텍스트.  
+generatedImage: 생성된 이미지의 Base64 인코딩된 데이터.  
+  
+
+- 예시 이미지 + 프롬프트 텍스트 기반으로 생성된 이미지 반환(basicPrompt 브랜치)
+  http://localhost:8080/api/generate-images
+
+**input**
+````json
+{
+  "token": "exampleToken123",
+  "projectId": "project123",
+  "exampleImage": "base64_example_image_data",
+  "basicItems": [
+    {
+      "index": 1,
+      "promptText": "Example prompt text 1"
+    },
+    {
+      "index": 2,
+      "promptText": "Example prompt text 2"
+    },
+    {
+      "index": 3,
+      "promptText": "Example prompt text 3"
+    }
+  ]
+}
+
+````
+
 **output**
 ```json
 {
   "projectId": "12345",
+  "exampleImage": "base64_example_image_data",
   "generatedItems": [
     {
-      "index": "item1",
-      "promptText": "이미지 설명 예시 1",
-      "generatedImage": "Base64인코딩된이미지데이터1_generated_item1"
+      "index": "1",
+      "promptText": "Example prompt text 1",
+      "generatedImage": "base64_generated_image_data_1"
     },
     {
-      "index": "item2",
-      "promptText": "이미지 설명 예시 2",
-      "generatedImage": "Base64인코딩된이미지데이터1_generated_item2"
+      "index": "2",
+      "promptText": "Example prompt text 2",
+      "generatedImage": "base64_generated_image_data_2"
+    },
+    {
+      "index": "3",
+      "promptText": "Example prompt text 3",
+      "generatedImage": "base64_generated_image_data_3"
     }
   ]
 }
 ```
-```json
-[
-  {
-    "id": "1",
-    "data": "임시이미지데이터1(Base64)"
-  },
-  {
-    "id": "2",
-    "data": "임시이미지데이터2(Base64)"
-  }
-]
 
-```
+token: 인증이나 식별을 위한 토큰.  
+projectId: 프로젝트의 고유 ID.  
+exampleImage: 해당 프로젝트와 관련된 공통 예시 이미지의 Base64 인코딩된 데이터.  
+basicItems: 여러 개의 프롬프트 항목을 포함하는 리스트.  
+index: 각 항목의 고유 인덱스.  
+promptText: 프롬프트 텍스트.  
