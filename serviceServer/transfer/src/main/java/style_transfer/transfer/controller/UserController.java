@@ -6,9 +6,11 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import style_transfer.transfer.repository.User;
 import style_transfer.transfer.repository.UserRepository;
 import style_transfer.transfer.repository.generatedImageResponseDto;
+import style_transfer.transfer.service.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +21,10 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
+
 
     @GetMapping("/signup")
     public String signup(@AuthenticationPrincipal OAuth2User principal) {
@@ -33,9 +39,11 @@ public class UserController {
     }
 
     @GetMapping("/user-profile")
-    public ResponseEntity<User> userProfile(@AuthenticationPrincipal OAuth2User principal) {
-        String email = principal.getAttribute("email");
-        User user = userRepository.findByEmail(email);
+    public ResponseEntity<User> userProfile(@RequestHeader("Authorization") String token) {
+        if (token.startsWith("Bearer ")) {
+            token = token.substring(7); // "Bearer " 부분을 제거
+        }
+        User user = userService.getUserByToken(token);
         if (user != null) {
             return ResponseEntity.ok(user);
         } else {
