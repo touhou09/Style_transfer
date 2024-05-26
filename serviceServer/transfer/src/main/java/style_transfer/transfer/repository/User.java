@@ -5,17 +5,20 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Builder;
 
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Document
+@Builder
+@Document(collection = "users")
 public class User {
     @Id
     private String id;
     private String email;
     private String name;
-    private List<generatedImageResponseDto> Projects;
+    private List<generatedImageResponseDto> projects;
+    private String token; // Access Token 필드 추가
 }

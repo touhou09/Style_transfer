@@ -29,4 +29,10 @@ public class TokenValidationService {
             return false;
         }
     }
+
+    public String extractEmailFromToken(String token) {
+        String url = "https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=" + token;
+        Map<String, String> tokenInfo = restTemplate.getForObject(url, Map.class);
+        return tokenInfo != null ? tokenInfo.get("email") : null;
+    }
 }

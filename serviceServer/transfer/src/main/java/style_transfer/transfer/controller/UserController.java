@@ -1,67 +1,111 @@
 package style_transfer.transfer.controller;
 
+import com.github.scribejava.apis.GoogleApi20;
+import com.github.scribejava.core.builder.ServiceBuilder;
+import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.oauth.OAuth20Service;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import style_transfer.transfer.repository.User;
-import style_transfer.transfer.repository.UserRepository;
-import style_transfer.transfer.repository.generatedImageResponseDto;
+import style_transfer.transfer.service.TokenValidationService;
 import style_transfer.transfer.service.UserService;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
-@Controller
-@RequestMapping("/api/user")
+@RestController
+@RequestMapping("/user")
 public class UserController {
 
-    @Autowired
-    private UserRepository userRepository;
+    @Value("${google.client-id}")
+    private String clientId;
+
+    @Value("${google.client-secret}")
+    private String clientSecret;
+
+    @Value("${google.callback-url}")
+    private String callbackUrl;
 
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private TokenValidationService tokenValidationService;
 
-    @GetMapping("/signup")
-    public String signup(@AuthenticationPrincipal OAuth2User principal) {
-        String email = principal.getAttribute("email");
-        if (userRepository.findByEmail(email) == null) {
-            String name = principal.getAttribute("name");
-            List<generatedImageResponseDto> initialProjects = new ArrayList<>();  // 초기 프로젝트 목록 생성
-            User user = new User(null, email, name, initialProjects);  // 프로젝트 목록 포함하여 사용자 객체 생성
-            userRepository.save(user);
-        }
-        return "redirect:/user-profile";
+    @GetMapping("/login")
+    public void login(HttpServletResponse response) throws IOException {
+        OAuth20Service service = new ServiceBuilder(clientId)
+                .apiSecret(clientSecret)
+                .callback(callbackUrl)
+                .defaultScope("profile email") // scope 설정
+                .build(GoogleApi20.instance());
+        String authorizationUrl = service.getAuthorizationUrl();
+        response.sendRedirect(authorizationUrl);
     }
 
-    @GetMapping("/user-profile")
-    public ResponseEntity<User> userProfile(@RequestHeader("Authorization") String token) {
-        if (token.startsWith("Bearer ")) {
-            token = token.substring(7); // "Bearer " 부분을 제거
+    @GetMapping("/callback")
+    public ResponseEntity<?> callback(@RequestParam("code") String code) throws IOException, ExecutionException, InterruptedException {
+        OAuth20Service service = new ServiceBuilder(clientId)
+                .apiSecret(clientSecret)
+                .callback(callbackUrl)
+                .defaultScope("profile email") // scope 설정
+                .build(GoogleApi20.instance());
+        OAuth2AccessToken accessToken;
+        try {
+            accessToken = service.getAccessToken(code);
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body("Error retrieving access token: " + e.getMessage());
         }
-        User user = userService.getUserByToken(token);
-        if (user != null) {
-            return ResponseEntity.ok(user);
+
+        String token = accessToken.getAccessToken();
+        boolean isValid = tokenValidationService.validateToken(token);
+
+        if (isValid) {
+            String userInfoUrl = "https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=" + token;
+            RestTemplate restTemplate = new RestTemplate();
+            Map<String, String> userInfo = restTemplate.getForObject(userInfoUrl, Map.class);
+
+            String email = userInfo.get("email");
+            String name = userInfo.get("name");
+
+            User existingUser = userService.getUserByEmail(email).block();
+            if (existingUser == null) {
+                existingUser = User.builder()
+                        .email(email)
+                        .name(name)
+                        .projects(Collections.emptyList()) // 프로젝트 리스트 초기화
+                        .build();
+            } else {
+                existingUser.setName(name);
+            }
+
+            existingUser.setToken(token);
+            userService.saveOrUpdateUser(existingUser);
+
+            return ResponseEntity.ok(token);
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(401).body("Invalid Token");
         }
     }
 
-    @GetMapping("/projects")
-    public ResponseEntity<List<generatedImageResponseDto>> userProjects(@RequestHeader("Authorization") String token) {
-        if (token.startsWith("Bearer ")) {
-            token = token.substring(7); // "Bearer " 부분을 제거
-        }
-        User user = userService.getUserByToken(token);
-        if (user != null) {
-            return ResponseEntity.ok(user.getProjects());
+    @PutMapping("/update")
+    public ResponseEntity<?> updateUser(@RequestBody User user) {
+        User existingUser = userService.getUserByEmail(user.getEmail()).block();
+        if (existingUser != null) {
+            existingUser.setName(user.getName());
+            if (user.getProjects() != null) {
+                existingUser.setProjects(user.getProjects());
+            }
+            userService.saveOrUpdateUser(existingUser);
+            return ResponseEntity.ok("User updated successfully");
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(404).body("User not found");
         }
     }
 }
