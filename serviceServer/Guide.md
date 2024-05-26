@@ -134,3 +134,94 @@ exampleImage: 해당 프로젝트와 관련된 공통 예시 이미지의 Base64
 basicItems: 여러 개의 프롬프트 항목을 포함하는 리스트.  
 index: 각 항목의 고유 인덱스.  
 promptText: 프롬프트 텍스트.  
+
+``` json
+info:
+  title: User Controller API
+  version: 1.0.0
+  description: API for user authentication and management using Google OAuth 2.0
+paths:
+  /user/login:
+    get:
+      summary: Redirect to Google OAuth 2.0 login
+      responses:
+        '302':
+          description: Redirect to Google OAuth 2.0 authorization URL
+        '500':
+          description: Internal Server Error
+
+  /user/callback:
+    get:
+      summary: Handle Google OAuth 2.0 callback
+      parameters:
+        - name: code
+          in: query
+          required: true
+          description: Authorization code returned by Google OAuth 2.0
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved and validated access token
+          content:
+            application/json:
+              schema:
+                type: string
+        '400':
+          description: Error retrieving access token
+          content:
+            application/json:
+              schema:
+                type: string
+        '401':
+          description: Invalid token
+          content:
+            application/json:
+              schema:
+                type: string
+
+  /user/update:
+    put:
+      summary: Update user information
+      requestBody:
+        description: User object that needs to be updated
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                type: string
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: string
+        '500':
+          description: Internal Server Error
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: user@example.com
+        name:
+          type: string
+          example: John Doe
+        projects:
+          type: array
+          items:
+            type: string
+          example: []
+
+```
