@@ -83,3 +83,6 @@ pip install -r requirements.txt
   ]
 }
 ```
+
+# 고려 사항
+다수의 요청이 들어올 때는 어떻게?
