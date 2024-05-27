@@ -11,7 +11,7 @@ requirements.txt 추후 업데이트 예정
 **input from service**
 ```json
 {
-  "task": retrieval or generation,
+  "task": "retrieval or generation",
   "text": "retrieval 용 예시 텍스트"
 }
 
