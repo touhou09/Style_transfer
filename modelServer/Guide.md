@@ -41,7 +41,7 @@ requirements.txt 추후 업데이트 예정
 **input from service**
 ```json
 {
-  "task": retrieval or generation,
+  "task": "retrieval or generation",
   "exampleImagePath": "이미지 데이터에 대한 경로 (로컬 머신에서 전송할 이미지를 저장한 경로)",
   "basicItems": [
     {
@@ -67,17 +67,17 @@ requirements.txt 추후 업데이트 예정
     {
       "index": 1,
       "summarizedText": "요약된 텍스트 1",
-      "generatedImage": 이미지 데이터 1 (Base64 인코딩)
+      "generatedImage": "이미지 데이터 1 (Base64 인코딩)"
     },
     {
       "index": 2,
       "summarizedText": "요약된 텍스트 2",
-      "generatedImage": 이미지 데이터 2 (Base64 인코딩)
+      "generatedImage": "이미지 데이터 2 (Base64 인코딩)"
     },
     {
       "index": 3,
       "summarizedText": "요약된 텍스트 3",
-      "generatedImage": 이미지 데이터 3 (Base64 인코딩)
+      "generatedImage": "이미지 데이터 3 (Base64 인코딩)"
     }
   ]
 }
