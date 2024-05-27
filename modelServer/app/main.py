@@ -10,7 +10,7 @@ from routers import items, example_images, generate_images
 
 def main():
     
-    gpt_client = init_gpt_client(gpt_api_key = 'sk-proj-QFbBChFKMOdqq51HXCqhT3BlbkFJqaFNb2xdKrMWgDAriBHy')
+    gpt_client = init_gpt_client(gpt_api_key = 'put your personal API key')
     
     diffusion_pipeline, clip_model, preprocess, device = init_models(clip_model_name = 'ViT-B/32')
     
