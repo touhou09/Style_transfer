@@ -4,7 +4,7 @@
 pip install -r requirements.txt
 ```
 
-단, 필요한 패키지들은 requirements.txt에 미리 작성해놓을것
+requirements.txt 추후 업데이트 예정
 
 # Model Server
 
