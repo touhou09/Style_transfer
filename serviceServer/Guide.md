@@ -236,7 +236,7 @@ promptText: 프롬프트 텍스트.
 
 ### 엔드포인트
 
-1. **POST** `/user/authenticate`
+1. **POST** `/user/google`
   - **입력**: 구글 인증 코드.
   - **출력**: 액세스 토큰.
 
