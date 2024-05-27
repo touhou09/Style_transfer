@@ -10,6 +10,8 @@ import style_transfer.transfer.repository.UserRepository;
 import style_transfer.transfer.repository.generatedImageResponseDto;
 import style_transfer.transfer.repository.promptRequestDto;
 
+import java.time.LocalDateTime;
+
 @Service
 public class ImageGenerationService {
 
@@ -22,6 +24,7 @@ public class ImageGenerationService {
         this.userRepository = userRepository;
     }
 
+    /*
     public Mono<generatedImageResponseDto> generateImages(promptRequestDto request) {
         // 외부 API로 POST 요청을 보내고 응답을 처리
         return webClient.post()
@@ -35,6 +38,27 @@ public class ImageGenerationService {
                     if (user != null) {
                         user.getProjects().add(response);
                         userRepository.save(user);
+                    }
+                    return Mono.just(response);
+                })
+                .onErrorMap(WebClientResponseException.class, ex -> new Exception("API call failed: " + ex.getMessage()));
+    }
+    */
+    public Mono<generatedImageResponseDto> generateImages(promptRequestDto request) {
+        // 외부 API로 POST 요청을 보내고 응답을 처리
+        return webClient.post()
+                .uri("/generate-images")
+                .body(Mono.just(request), promptRequestDto.class) // 직접 받은 promptRequestDto를 사용
+                .retrieve()
+                .bodyToMono(generatedImageResponseDto.class)
+                .flatMap(response -> {
+                    // 현재 서버 시간을 설정
+                    response.setTime(LocalDateTime.now());
+                    // 응답을 DB에 저장
+                    User user = userRepository.findByToken(request.getToken()).block();
+                    if (user != null) {
+                        user.getProjects().add(response);
+                        userRepository.save(user).block(); // Mono 반환 후 즉시 완료
                     }
                     return Mono.just(response);
                 })

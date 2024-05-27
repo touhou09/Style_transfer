@@ -1,9 +1,8 @@
 package style_transfer.transfer.repository;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 // 프롬프트와 생성된 이미지 전달 dto
@@ -14,4 +13,9 @@ public class generatedImageResponseDto {
     private String projectId;
     private String exampleImage;
     private List<generatedItem> generatedItems;
+
+    @Setter
+    @Getter
+    private LocalDateTime time;
+
 }
