@@ -50,6 +50,3 @@ def ai_model():
             
         send_data_dict_to_service(ret_dict) # service server로 보내는 함수가 있다고 가정
 
-
-if __name__ == "__main__":
-    ai_model()
