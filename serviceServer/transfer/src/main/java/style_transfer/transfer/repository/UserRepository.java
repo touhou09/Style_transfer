@@ -1,8 +1,8 @@
 package style_transfer.transfer.repository;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+import reactor.core.publisher.Mono;
 
-public interface UserRepository extends MongoRepository<User, String> {
-    User findByEmail(String email);
-    User findByToken(String token);
+public interface UserRepository extends ReactiveMongoRepository<User, String> {
+    Mono<User> findByToken(String token);
 }

@@ -31,7 +31,7 @@ public class ImageGenerationService {
                 .bodyToMono(generatedImageResponseDto.class)
                 .flatMap(response -> {
                     // 응답을 DB에 저장
-                    User user = userRepository.findByToken(request.getToken());
+                    User user = userRepository.findByToken(request.getToken()).block();
                     if (user != null) {
                         user.getProjects().add(response);
                         userRepository.save(user);

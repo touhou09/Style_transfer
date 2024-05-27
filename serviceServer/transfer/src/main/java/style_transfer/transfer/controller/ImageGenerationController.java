@@ -34,26 +34,21 @@ public class ImageGenerationController {
         // 토큰이 정상적인지 확인
         boolean isValidToken = tokenService.validateToken(request.getToken());
 
-        if (shouldValidateToken) {
-            if (!isValidToken) {
-                // 토큰이 유효하지 않을 경우 에러 응답
-                return Mono.error(new RuntimeException("Invalid token"));
-            }
+        if ((request.getToken() == null || request.getToken().isEmpty()) && !shouldValidateToken) {
+            return imageService.generateImages(request);
         }
 
-        if (request.getToken() == null || request.getToken().isEmpty()) {
-            return imageService.generateImages(request);
+        if (shouldValidateToken && !isValidToken) {
+            return Mono.error(new RuntimeException("Invalid token"));
         }
 
         return imageService.generateImages(request)
                 .flatMap(response -> {
-                    // 이미지 생성 후 프로젝트를 사용자 정보에 추가
-                    String email = tokenService.extractEmailFromToken(request.getToken());
-                    if (email != null) {
-                        return userService.addProjectToUser(email, response)
+                    if (isValidToken) {
+                        return userService.saveProject(request.getToken(), response)
                                 .thenReturn(response);
                     } else {
-                        return Mono.error(new RuntimeException("Failed to extract email from token"));
+                        return Mono.just(response);
                     }
                 });
 
