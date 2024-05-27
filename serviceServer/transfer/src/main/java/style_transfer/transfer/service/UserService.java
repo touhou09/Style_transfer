@@ -68,5 +68,13 @@ public class UserService {
                 }))
                 .then();
     }
+    public Mono<User> getUserByToken(String token) {
+        return userRepository.findByToken(token);
+    }
+
+    public Mono<List<generatedImageResponseDto>> getProjectsByToken(String token) {
+        return userRepository.findByToken(token)
+                .map(User::getProjects);
+    }
 
 }

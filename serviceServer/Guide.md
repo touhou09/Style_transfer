@@ -133,95 +133,119 @@ projectId: 프로젝트의 고유 ID.
 exampleImage: 해당 프로젝트와 관련된 공통 예시 이미지의 Base64 인코딩된 데이터.  
 basicItems: 여러 개의 프롬프트 항목을 포함하는 리스트.  
 index: 각 항목의 고유 인덱스.  
-promptText: 프롬프트 텍스트.  
+promptText: 프롬프트 텍스트.
 
-``` json
-info:
-  title: User Controller API
-  version: 1.0.0
-  description: API for user authentication and management using Google OAuth 2.0
-paths:
-  /user/login:
-    get:
-      summary: Redirect to Google OAuth 2.0 login
-      responses:
-        '302':
-          description: Redirect to Google OAuth 2.0 authorization URL
-        '500':
-          description: Internal Server Error
+### 1. 구글로 인증하기
 
-  /user/callback:
-    get:
-      summary: Handle Google OAuth 2.0 callback
-      parameters:
-        - name: code
-          in: query
-          required: true
-          description: Authorization code returned by Google OAuth 2.0
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Successfully retrieved and validated access token
-          content:
-            application/json:
-              schema:
-                type: string
-        '400':
-          description: Error retrieving access token
-          content:
-            application/json:
-              schema:
-                type: string
-        '401':
-          description: Invalid token
-          content:
-            application/json:
-              schema:
-                type: string
+- **엔드포인트**: `/user/google`
+- **메소드**: `POST`
+- **설명**: 구글 인증 코드를 사용하여 사용자를 인증하고 액세스 토큰을 반환합니다.
 
-  /user/update:
-    put:
-      summary: Update user information
-      requestBody:
-        description: User object that needs to be updated
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/User'
-      responses:
-        '200':
-          description: User updated successfully
-          content:
-            application/json:
-              schema:
-                type: string
-        '404':
-          description: User not found
-          content:
-            application/json:
-              schema:
-                type: string
-        '500':
-          description: Internal Server Error
+#### 입력
+- **파라미터**:
+  - `code` (string, 필수): 구글 인증 코드.
 
-components:
-  schemas:
-    User:
-      type: object
-      properties:
-        email:
-          type: string
-          format: email
-          example: user@example.com
-        name:
-          type: string
-          example: John Doe
-        projects:
-          type: array
-          items:
-            type: string
-          example: []
-
+```json
+{
+  "code": "string"
+}
 ```
+
+#### 출력
+- **응답**: `200 OK`
+- **본문**:
+  - `accessToken` (string): 인증에 성공한 후 생성된 액세스 토큰.
+
+```json
+{
+  "accessToken": "string"
+}
+```
+
+### 2. 사용자 정보 조회
+
+- **엔드포인트**: `/user/info`
+- **메소드**: `GET`
+- **설명**: 제공된 인증 토큰을 기반으로 사용자의 정보를 조회합니다.
+
+#### 입력
+- **헤더**:
+  - `Authorization` (string, 필수): 인증을 위한 베어러 토큰.
+
+```json
+{
+  "Authorization": "Bearer token"
+}
+```
+
+#### 출력
+- **응답**: `200 OK` 또는 `404 Not Found`
+- **본문**:
+  - `id` (string): 사용자의 ID.
+  - `token` (string): 사용자의 토큰.
+  - `name` (string): 사용자의 이름.
+  - `email` (string): 사용자의 이메일.
+  - `projects` (array): 사용자의 프로젝트 목록.
+
+```json
+{
+  "id": "string",
+  "token": "string",
+  "name": "string",
+  "email": "string",
+  "projects": [
+    {
+      "imageUrl": "string",
+      "description": "string"
+    }
+  ]
+}
+```
+
+### 3. 사용자 프로젝트 조회
+
+- **엔드포인트**: `/user/projects`
+- **메소드**: `GET`
+- **설명**: 제공된 인증 토큰을 기반으로 사용자의 프로젝트를 조회합니다.
+
+#### 입력
+- **헤더**:
+  - `Authorization` (string, 필수): 인증을 위한 베어러 토큰.
+
+```json
+{
+  "Authorization": "Bearer token"
+}
+```
+
+#### 출력
+- **응답**: `200 OK` 또는 `404 Not Found`
+- **본문**:
+  - `projects` (array): 사용자의 프로젝트 목록.
+
+```json
+[
+  {
+    "imageUrl": "string",
+    "description": "string"
+  }
+]
+```
+
+## 요약
+
+### 엔드포인트
+
+1. **POST** `/user/authenticate`
+  - **입력**: 구글 인증 코드.
+  - **출력**: 액세스 토큰.
+
+2. **GET** `/user/info`
+  - **입력**: 인증 토큰.
+  - **출력**: 사용자 정보.
+
+3. **GET** `/user/projects`
+  - **입력**: 인증 토큰.
+  - **출력**: 사용자의 프로젝트 목록.
+
+이 문서는 API 엔드포인트에 대한 상세한 개요를 제공하며, 입력 파라미터와 예상되는 출력을 설명합니다. JSON 예제는 요청 및 응답 데이터 형식을 명확하게 설명합니다.
