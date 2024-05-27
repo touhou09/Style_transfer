@@ -1,16 +1,8 @@
-from fastapi import FastAPI
-from routers import items, example_images, generate_images
-
-# app = FastAPI()
-
-# app.include_router(items.router, prefix="/items")
-# app.include_router(generate_images.router)
-# app.include_router(example_images.router)
-
+from all_func import *
 
 def main():
     
-    gpt_client = init_gpt_client(gpt_api_key = 'put your personal API key')
+    gpt_client = init_gpt_client(gpt_api_key = 'sk-proj-QFbBChFKMOdqq51HXCqhT3BlbkFJqaFNb2xdKrMWgDAriBHy')
     
     diffusion_pipeline, clip_model, preprocess, device = init_models(clip_model_name = 'ViT-B/32')
     
@@ -36,7 +28,7 @@ def main():
             
             ref_image_path = received_dict['exampleImagePath']
             
-            ref_prompt = get_paired_prompt(ref_image_path) # 구현해야함
+            ref_prompt = get_paired_prompt(ref_image_path)
             
             item_dict_list = received_dict['basicItems']
             input_text_list = []
