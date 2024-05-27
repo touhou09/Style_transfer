@@ -1,5 +1,4 @@
 # model server guide
-최초로 기본 패키지를 모두 다운받아놔야 한다.  
 ```　bash
 pip install -r requirements.txt
 ```
