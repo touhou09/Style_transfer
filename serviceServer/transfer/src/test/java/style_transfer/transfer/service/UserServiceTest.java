@@ -58,7 +58,7 @@ public class UserServiceTest {
         given(requestHeadersSpec.retrieve()).willReturn(responseSpec);
         given(responseSpec.bodyToMono(ArgumentMatchers.eq(Map.class))).willReturn(Mono.just(response));
 
-        String result = userService.authenticateWithGoogle(code);
+        Mono<String> result = userService.authenticateWithGoogle(code);
 
         assertEquals(accessToken, result);
     }

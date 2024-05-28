@@ -6,6 +6,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import style_transfer.transfer.repository.User;
+import style_transfer.transfer.repository.UserInfo;
 import style_transfer.transfer.repository.UserRepository;
 import style_transfer.transfer.repository.generatedImageResponseDto;
 
@@ -32,7 +33,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public String authenticateWithGoogle(String code) {
+    public Mono<String> authenticateWithGoogle(String code) {
         return webClient.post()
                 .uri("/token")
                 .header("Content-Type", "application/x-www-form-urlencoded")
@@ -43,38 +44,78 @@ public class UserService {
                         .with("grant_type", "authorization_code"))
                 .retrieve()
                 .bodyToMono(Map.class)
-                .<String>handle((responseBody, sink) -> {
+                .flatMap(responseBody -> {
                     if (responseBody.containsKey("access_token")) {
-                        sink.next((String) responseBody.get("access_token"));
+                        String accessToken = (String) responseBody.get("access_token");
+                        return Mono.just(accessToken);
                     } else {
-                        sink.error(new RuntimeException("Failed to authenticate with Google"));
+                        return Mono.error(new RuntimeException("Failed to authenticate with Google"));
                     }
-                })
-                .block();  // 비동기 호출을 동기식으로 변환
+                });
+    }
+
+    public Mono<String> getEmailFromToken(String token) {
+        return webClient.get()
+                .uri("https://www.googleapis.com/oauth2/v1/userinfo?alt=json")
+                .header("Authorization", "Bearer " + token)
+                .retrieve()
+                .bodyToMono(Map.class)
+                .flatMap(userInfo -> {
+                    if (userInfo.containsKey("email")) {
+                        return Mono.just((String) userInfo.get("email"));
+                    } else {
+                        return Mono.error(new RuntimeException("Failed to retrieve email from token"));
+                    }
+                });
     }
 
     public Mono<Void> saveProject(String token, generatedImageResponseDto project) {
-        return userRepository.findByToken(token)
-                .flatMap(user -> {
-                    user.getProjects().add(project);
-                    return userRepository.save(user);
-                })
-                .switchIfEmpty(Mono.defer(() -> {
-                    User newUser = User.builder()
-                            .token(token)
-                            .projects(List.of(project))
-                            .build();
-                    return userRepository.save(newUser);
-                }))
+        return getEmailFromToken(token)
+                .flatMap(email -> userRepository.findByEmail(email)
+                        .flatMap(user -> {
+                            user.getProjects().add(project);
+                            return userRepository.save(user);
+                        })
+                        .switchIfEmpty(Mono.defer(() -> {
+                            User newUser = User.builder()
+                                    .email(email)
+                                    .projects(List.of(project))
+                                    .build();
+                            return userRepository.save(newUser);
+                        }))
+                )
                 .then();
     }
-    public Mono<User> getUserByToken(String token) {
-        return userRepository.findByToken(token);
+
+    public Mono<User> getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
-    public Mono<List<generatedImageResponseDto>> getProjectsByToken(String token) {
-        return userRepository.findByToken(token)
+    public Mono<List<generatedImageResponseDto>> getProjectsByEmail(String email) {
+        return userRepository.findByEmail(email)
                 .map(User::getProjects);
+    }
+
+    public Mono<generatedImageResponseDto> getProjectByEmailAndProjectId(String email, String projectId) {
+        return userRepository.findByEmail(email)
+                .flatMap(user -> {
+                    return Mono.justOrEmpty(
+                            user.getProjects().stream()
+                                    .filter(project -> project.getProjectId().equals(projectId))
+                                    .findFirst()
+                    );
+                });
+    }
+
+    private UserInfo toDto(User user) {
+        return new UserInfo(user.getId(), user.getEmail(), user.getName(), user.getProfileImage());
+    }
+
+    public Mono<UserInfo> getUserInfo(String token) {
+        return getEmailFromToken(token)
+                .flatMap(email -> userRepository.findByEmail(email)
+                        .map(this::toDto)
+                        .switchIfEmpty(Mono.error(new RuntimeException("User not found"))));
     }
 
 }

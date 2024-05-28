@@ -26,7 +26,7 @@ public class ImageGenerationController {
         this.userService = userService;
     }
 
-    @PostMapping("/api/generate-images")
+    @PostMapping("/generate-images")
     public Mono<generatedImageResponseDto> generateImages(@RequestBody promptRequestDto request) {
         // index 2이상인지 확인
         boolean shouldValidateToken = request.getBasicItems().stream()
@@ -51,6 +51,5 @@ public class ImageGenerationController {
                         return Mono.just(response);
                     }
                 });
-
     }
 }
