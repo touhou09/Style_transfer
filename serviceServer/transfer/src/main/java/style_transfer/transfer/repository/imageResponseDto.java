@@ -11,5 +11,6 @@ import org.springframework.data.domain.Page;
 @AllArgsConstructor
 public class imageResponseDto {
     private String summary;
+    private String path;
     private Page<image> images;
 }
