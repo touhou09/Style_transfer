@@ -18,6 +18,7 @@ public class exampleImageController {
         this.imageService = imageService;
     }
 
+    @PostMapping("/images")
     public Mono<ResponseEntity<Page<image>>> createImages(@RequestBody tokenRequestDto requestDto,
                                                           @RequestParam int page,
                                                           @RequestParam int size) {

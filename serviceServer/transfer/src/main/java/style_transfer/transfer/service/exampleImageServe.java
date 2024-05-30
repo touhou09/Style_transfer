@@ -33,7 +33,7 @@ public class exampleImageServe {
                 .bodyToMono(imageResponseDto.class)
                 .map(responseDto -> {
                     Pageable pageable = PageRequest.of(page, size);
-                    List<image> images = (List<image>) responseDto.getImages();
+                    List<image> images = responseDto.getImages().getContent();
                     int start = (int) pageable.getOffset();
                     int end = Math.min((start + pageable.getPageSize()), images.size());
                     List<image> subList = images.subList(start, end);
