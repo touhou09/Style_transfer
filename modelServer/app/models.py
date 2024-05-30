@@ -4,6 +4,7 @@ from typing import List, Optional
 # 예시 이미지 생성 model
 class Image(BaseModel):
     id: str
+    path: str
     data: str  # Base64 인코딩된 이미지 데이터
 
 # 프롬프트 항목 모델
@@ -24,14 +25,15 @@ class TokenRequestDto(BaseModel):
 
 # 예시 이미지 전달 dto
 class ImageResponseDto(BaseModel):
-    # token: str
     summaryText : str
+    path : str
     images: List[Image]
 
 # 프롬프트 요청 DTO
 class PromptRequestDto(BaseModel):
     projectId: str  # 프로젝트 ID
     exampleImage: str  # 해당 프로젝트와 관련된 공통 이미지 데이터 (Base64 인코딩된 이미지 데이터)
+    path: str
     basicItems: List[basicItem]  # 해당 프로젝트와 관련된 프롬프트 항목들 # 해당 프로젝트와 관련된 프롬프트 항목들
 
 # 생성한 이미지를 prompt와 함께 전달하는 dto
