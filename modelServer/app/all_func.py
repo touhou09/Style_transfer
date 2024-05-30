@@ -27,7 +27,6 @@ class GenreImageDataset(Dataset):
     def __init__(self, preprocess, image_path_list):
         self.preprocess = preprocess
         self.image_path_list = image_path_list
-            
 
     def __len__(self):
         return len(self.image_path_list)
@@ -71,7 +70,7 @@ def init_image_tensor_retrieval(clip_model, preprocess, genre_list, device,
     image_tensor_dict = {}
     image_path_dict = {}
     
-    for genre in tqdm(genre_list):
+    for genre in genre_list:
         
         image_tensors = []
         ret_image_path_list = None
@@ -81,7 +80,7 @@ def init_image_tensor_retrieval(clip_model, preprocess, genre_list, device,
 
         init_dl = get_genre_image_dataloader(preprocess, image_path_list, batch_size=batch_size)
 
-        for processed_images, image_path in init_dl:
+        for processed_images, image_path in tqdm(init_dl):
             with torch.no_grad():
                 processed_images = processed_images.to(device)
                 image_feature = clip_model.encode_image(processed_images)
