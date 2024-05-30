@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from typing import List
 from models import GeneratedImageResponseDto, PromptRequestDto, basicItem, generatedItem
-from modelServer.app import ai
+import ai
 
 # 라우터 인스턴스 생성
 router = APIRouter()

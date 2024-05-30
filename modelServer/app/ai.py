@@ -23,8 +23,6 @@ def ai(get_data):
         topk_img_path_list = retrieve_topk_image_path(example_text, clip_model, image_tensor_dict,
                                                       image_path_dict, classified_genre, device)
         
-        
-        
         loaded_images = load_images_from_path(topk_img_path_list)
         encoded_base64_images = encode_image_to_base64(loaded_images)
 

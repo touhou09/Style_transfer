@@ -1,7 +1,7 @@
 from models import Image, ImageResponseDto, TokenRequestDto
 from fastapi import APIRouter
 from typing import List
-from modelServer.app import ai
+import ai
 
 router = APIRouter()
 
