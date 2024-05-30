@@ -44,6 +44,8 @@ requirements.txt 추후 업데이트 예정
 ```json
 {
   "task": "retrieval or generation",
+  "projectId" : "id",
+  "exampleImage" : "encoding image",
   "exampleImagePath": "이미지 데이터에 대한 경로 (로컬 머신에서 전송할 이미지를 저장한 경로)",
   "basicItems": [
     {
