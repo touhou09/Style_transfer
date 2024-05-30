@@ -68,20 +68,22 @@ requirements.txt 추후 업데이트 예정
 **output to service**
 ```json
 {
+  "projectId" : "id",
+  "exampleImage" : "encoding image",
   "generatedItems": [
     {
       "index": 0,
-      "summarizedText": "요약된 텍스트 0",
+      "originalPrompt": "원래 텍스트 0",
       "generatedImage": "이미지 데이터 0 (Base64 인코딩)"
     },
     {
       "index": 1,
-      "summarizedText": "요약된 텍스트 1",
+      "originalPrompt": "원래 텍스트 1",
       "generatedImage": "이미지 데이터 1 (Base64 인코딩)"
     },
     {
       "index": 2,
-      "summarizedText": "요약된 텍스트 2",
+      "originalPrompt": "원래 텍스트 2",
       "generatedImage": "이미지 데이터 2 (Base64 인코딩)"
     }
   ]

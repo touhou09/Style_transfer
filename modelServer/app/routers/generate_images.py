@@ -15,13 +15,14 @@ async def generate_images(request: PromptRequestDto) -> GeneratedImageResponseDt
     result = ai(data)
     
     # 생성된 이미지와 함께 응답 객체 생성
+    # projectId, 예시 이미지, [index, 프롬프트, 생성된 이미지]
     response = GeneratedImageResponseDto(
         projectId=request.projectId,
-        exampleImage=request.exampleImage,
+        exampleImage=request.id, # 이 부분을 인코딩 이미지로
         generatedItems=[
             generatedItem(
                 index=idx,
-                summarizedPrompt=item.promptText,  # 기본 프롬프트 텍스트를 그대로 사용
+                promptText=item.promptText,  # 기본 프롬프트 텍스트를 그대로 사용
                 generatedImage=generated_image
             ) for idx, (item, generated_image) in enumerate(zip(request.basicItems, result['generatedImages']))
         ]

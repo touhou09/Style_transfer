@@ -18,12 +18,12 @@ async def example_images(request: TokenRequestDto) -> ImageResponseDto:
     tmp = ai(data)
     
     # 응답 객체 생성
+    # summury한 text, [id(path), 인코딩 이미지 string]
     response = ImageResponseDto(
         summaryText=tmp.get("summarizedExampleText"),
         images=[
             Image(
-                id=str(item.get("index")),
-                path=item.get("path"),
+                id=str(item.get("path")),
                 data=item.get("data")
             ) for item in tmp.get("content", [])
         ]
