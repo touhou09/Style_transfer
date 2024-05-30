@@ -29,6 +29,7 @@ def ai(get_data):
         encoded_base64_images = encode_image_to_base64(loaded_images)
 
         ret_dict = get_dict_for_retrieval(summarized_prompt, topk_img_path_list, encoded_base64_images)
+        return ret_dict
 
     elif received_dict['task'] == 'generation':
 
@@ -56,4 +57,4 @@ def ai(get_data):
 
         ret_dict = get_dict_for_generation(summarized_text_list, encoded_base64_images)
 
-    return ret_dict
+        return ret_dict

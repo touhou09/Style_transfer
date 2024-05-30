@@ -8,10 +8,25 @@ router = APIRouter()
 @router.post("/exampleImages", response_model=ImageResponseDto)
 async def example_images(request: TokenRequestDto) -> ImageResponseDto:
 
+    # request 데이터를 dictionary로 변환
     data = request.model_dump(dict)
-    # data에서 task : retrieval 추가해야함
+    
+    # task : retrieval을 data에 추가
+    data['task'] = 'retrieval'
+    
+    # ai 함수 호출
     tmp = ai(data)
-
+    
     # 응답 객체 생성
-    response = ImageResponseDto(summaryText=tmp, path=tmp, images=tmp)
+    response = ImageResponseDto(
+        summaryText=tmp.get("summarizedExampleText"),
+        images=[
+            Image(
+                id=str(item.get("index")),
+                path=item.get("path"),
+                data=item.get("data")
+            ) for item in tmp.get("content", [])
+        ]
+    )
+    
     return response

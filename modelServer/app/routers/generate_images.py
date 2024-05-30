@@ -10,12 +10,21 @@ router = APIRouter()
 async def generate_images(request: PromptRequestDto) -> GeneratedImageResponseDto:
     
     data = request.model_dump(dict)
-    # 여기도 task: generation 추가
-
-    data = ai(data)
-
+    # task: generation 추가
+    data['task'] = 'generation'
+    result = ai(data)
     
     # 생성된 이미지와 함께 응답 객체 생성
-    response = GeneratedImageResponseDto(projectId=data, exampleImage=data, generatedItems=data)
+    response = GeneratedImageResponseDto(
+        projectId=request.projectId,
+        exampleImage=request.exampleImage,
+        generatedItems=[
+            generatedItem(
+                index=idx,
+                summarizedPrompt=summarized_prompt,
+                generatedImage=generated_image
+            ) for idx, (summarized_prompt, generated_image) in enumerate(zip(result['summarizedPrompts'], result['generatedImages']))
+        ]
+    )
     
     return response
