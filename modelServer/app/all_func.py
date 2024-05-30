@@ -19,6 +19,32 @@ from queue import Queue
 from openai import OpenAI
 
 import pandas as pd
+from torch.utils.data import Dataset, DataLoader
+
+# ======================================== DataLoader ========================================
+
+class GenreImageDataset(Dataset):
+    def __init__(self, preprocess, image_path_list):
+        self.preprocess = preprocess
+        self.image_path_list = image_path_list
+            
+
+    def __len__(self):
+        return len(self.image_path_list)
+    
+    def __getitem__(self, idx):
+        
+        image_path = self.image_path_list[idx]
+        image = preprocess(Image.open(image_path))
+        
+        return image, image_path
+
+
+def get_genre_image_dataloader(preprocess, image_path_list, batch_size):
+    genre_image_dataset = GenreImageDataset(preprocess, image_path_list)
+    return DataLoader(genre_image_dataset, batch_size=batch_size, num_workers=4)
+    
+# ============================================================================================
 
 # ======================================= initialization =======================================
 
@@ -40,33 +66,40 @@ def init_models(clip_model_name = 'ViT-B/32'):
     
     return diffusion_pipeline, clip_model, preprocess, device
 
-def init_image_tensor_retrieval(clip_model, preprocess, genre_list, device, root_path_retrieval='./top5000_images'):
+def init_image_tensor_retrieval(clip_model, preprocess, genre_list, device,
+                                batch_size=1024, root_path_retrieval='./top5000_images'):
     image_tensor_dict = {}
     image_path_dict = {}
-
+    
     for genre in tqdm(genre_list):
-#         print(f'\ngenre: {genre}')
-        images = os.listdir(f'{root_path_retrieval}/{genre}')
-        images = [os.path.join(f'{root_path_retrieval}/{genre}', image_id) for image_id in images]
+        
+        image_tensors = []
+        ret_image_path_list = None
+        
+        _images = os.listdir(f'{root_path_retrieval}/{genre}')
+        image_path_list = [os.path.join(f'{root_path_retrieval}/{genre}', image_id) for image_id in _images]
 
-        image_tensors = None
+        init_dl = get_genre_image_dataloader(preprocess, image_path_list, batch_size=batch_size)
 
-        for image_path in images:
+        for processed_images, image_path in init_dl:
             with torch.no_grad():
-                image = preprocess(Image.open(image_path)).unsqueeze(0).to(device)
-                image_feature = clip_model.encode_image(image)
+                processed_images = processed_images.to(device)
+                image_feature = clip_model.encode_image(processed_images)
                 image_feature /= image_feature.norm(dim=-1, keepdim=True)
 
-                if image_tensors == None:
-                    image_tensors = image_feature
+                image_tensors.append(image_feature)
+
+                if ret_image_path_list == None:
+                    ret_image_path_list = list(image_path)
                 else:
-                    image_tensors = torch.cat([image_tensors, image_feature])
-
-
+                    ret_image_path_list += list(image_path)
+                
+        image_tensors = torch.cat(image_tensors)
+#         print(image_tensors.shape)
         image_tensors_permute = image_tensors.permute(1,0)
 
         image_tensor_dict[genre] = image_tensors_permute
-        image_path_dict[genre] = images
+        image_path_dict[genre] = ret_image_path_list
         
     return image_tensor_dict, image_path_dict
 
@@ -79,9 +112,7 @@ def init_gpt_client(gpt_api_key):
 
 def summarize_texts(input_text_list:list, gpt_client, gpt_model_name='gpt-3.5-turbo', seed_val=123)-> list: 
     
-    if type(input_text_list) != list:
-        input_text_list = list(input_text_list)
-    
+    assert type(input_text_list) == list, "input for summarization must be list of string"
     
     query = 'Please summarize the key parts of the story below in one short sentence. answer without any explanation.\n\
              answer with noun phrase and change \'proper noun\' to pronoun or common nouns\n'
@@ -238,7 +269,7 @@ def get_dict_for_retrieval(summarized_text, image_paths, encoded_images):
     ret_dict['summarizedExampleText'] = summarized_text
     ret_dict['content'] = []
     for idx in range(len(encoded_images)):
-        ret_dict['content'].append({"id": idx+1, "path": image_paths[idx], "data": encoded_images[idx]})
+        ret_dict['content'].append({"index": idx, "path": image_paths[idx], "data": encoded_images[idx]})
         
     return ret_dict
 
@@ -246,7 +277,7 @@ def get_dict_for_generation(summarized_texts, encoded_images):
     ret_dict = {}
     ret_dict['generatedItems'] = []
     for idx in range(len(encoded_images)):
-        ret_dict['generatedItems'].append({"index": idx+1, "summarizedText": summarized_texts[idx], "generatedImage": encoded_images[idx]})
+        ret_dict['generatedItems'].append({"index": idx, "summarizedText": summarized_texts[idx], "generatedImage": encoded_images[idx]})
         
     return ret_dict
 
