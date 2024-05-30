@@ -23,14 +23,19 @@ requirements.txt 추후 업데이트 예정
   "summarizedExampleText": "요약된 텍스트",
   "content": [
     {
+      "id": "0",
+      "path": "이미지 데이터 0에 대한 경로 (로컬 머신에서 전송할 이미지를 저장한 경로)",
+      "data": "이미지 데이터 0 (Base64 인코딩)"
+    },
+    {
       "id": "1",
-      "path": "이미지 데이터에 대한 경로 (로컬 머신에서 전송할 이미지를 저장한 경로)",
-      "data": "이미지 데이터 (Base64 인코딩)"
+      "path": "이미지 데이터 1에 대한 경로 (로컬 머신에서 전송할 이미지를 저장한 경로)",
+      "data": "이미지 데이터 1 (Base64 인코딩)"
     },
     {
       "id": "2",
-      "path": "이미지 데이터에 대한 경로 (로컬 머신에서 전송할 이미지를 저장한 경로)",
-      "data": "이미지 데이터 (Base64 인코딩)"
+      "path": "이미지 데이터 2에 대한 경로 (로컬 머신에서 전송할 이미지를 저장한 경로)",
+      "data": "이미지 데이터 2 (Base64 인코딩)"
     }
   ],
 }
@@ -45,16 +50,16 @@ requirements.txt 추후 업데이트 예정
   "exampleImagePath": "이미지 데이터에 대한 경로 (로컬 머신에서 전송할 이미지를 저장한 경로)",
   "basicItems": [
     {
+      "index": 0,
+      "promptText": "Example prompt text 0"
+    },
+    {
       "index": 1,
       "promptText": "Example prompt text 1"
     },
     {
       "index": 2,
       "promptText": "Example prompt text 2"
-    },
-    {
-      "index": 3,
-      "promptText": "Example prompt text 3"
     }
   ]
 }
@@ -65,6 +70,11 @@ requirements.txt 추후 업데이트 예정
 {
   "generatedItems": [
     {
+      "index": 0,
+      "summarizedText": "요약된 텍스트 0",
+      "generatedImage": "이미지 데이터 0 (Base64 인코딩)"
+    },
+    {
       "index": 1,
       "summarizedText": "요약된 텍스트 1",
       "generatedImage": "이미지 데이터 1 (Base64 인코딩)"
@@ -73,15 +83,7 @@ requirements.txt 추후 업데이트 예정
       "index": 2,
       "summarizedText": "요약된 텍스트 2",
       "generatedImage": "이미지 데이터 2 (Base64 인코딩)"
-    },
-    {
-      "index": 3,
-      "summarizedText": "요약된 텍스트 3",
-      "generatedImage": "이미지 데이터 3 (Base64 인코딩)"
     }
   ]
 }
 ```
-
-# 고려 사항
-다수의 요청이 들어올 때는 어떻게?
