@@ -269,7 +269,7 @@ def get_dict_for_retrieval(summarized_text, image_paths, encoded_images):
     ret_dict['summarizedExampleText'] = summarized_text
     ret_dict['content'] = []
     for idx in range(len(encoded_images)):
-        ret_dict['content'].append({"index": idx, "path": image_paths[idx], "data": encoded_images[idx]})
+        ret_dict['content'].append({"path": image_paths[idx], "data": encoded_images[idx]})
         
     return ret_dict
 
