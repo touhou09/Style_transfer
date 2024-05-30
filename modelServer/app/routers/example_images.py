@@ -24,11 +24,14 @@ router = APIRouter()
 async def example_images(request: TokenRequestDto) -> ImageResponseDto:
     # 실제 이미지 처리 로직을 여기에 구현
     # 예시로, 임시 이미지 데이터를 생성 -> 필요 없어지면 comment or delete
-    data = searchExamples(request.text)
-    summary = gptSummary(request.text)
+    '''
+    
+    ''' 
+    #data = searchExamples(request.text)
+    #summary = gptSummary(request.text)
 
     # 응답 객체 생성
     # response = ImageResponseDto(token=request.token, images=fake_images)
-    response = ImageResponseDto(summaryText=summary, images=data)
+    #response = ImageResponseDto(summaryText=summary, images=data)
     
     return response
