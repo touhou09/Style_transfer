@@ -35,7 +35,7 @@ class GenreImageDataset(Dataset):
     def __getitem__(self, idx):
         
         image_path = self.image_path_list[idx]
-        image = preprocess(Image.open(image_path))
+        image = self.preprocess(Image.open(image_path))
         
         return image, image_path
 
