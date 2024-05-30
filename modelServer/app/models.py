@@ -9,7 +9,7 @@ class Image(BaseModel):
 
 # 프롬프트 항목 모델
 class basicItem(BaseModel):
-    index: str  # 각 PromptItem의 고유 Index, 변경: 'id'에서 'index'로 변경
+    index: int  # 각 PromptItem의 고유 Index, 변경: 'id'에서 'index'로 변경
     promptText: str  # 프롬프트 텍스트
 
 # 프롬프트와 생성된 이미지 전송 시 model

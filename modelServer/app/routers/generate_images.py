@@ -21,9 +21,9 @@ async def generate_images(request: PromptRequestDto) -> GeneratedImageResponseDt
         generatedItems=[
             generatedItem(
                 index=idx,
-                summarizedPrompt=summarized_prompt,
+                summarizedPrompt=item.promptText,  # 기본 프롬프트 텍스트를 그대로 사용
                 generatedImage=generated_image
-            ) for idx, (summarized_prompt, generated_image) in enumerate(zip(result['summarizedPrompts'], result['generatedImages']))
+            ) for idx, (item, generated_image) in enumerate(zip(request.basicItems, result['generatedImages']))
         ]
     )
     
