@@ -35,6 +35,9 @@ def ai(get_data):
 
         ref_image_path = received_dict['exampleImagePath']
 
+        project_id = received_dict['projectId']
+        encoded_ref_image = received_dict['exampleImage']
+        
         ref_prompt = get_paired_prompt(ref_image_path)
 
         item_dict_list = received_dict['basicItems']
@@ -55,6 +58,6 @@ def ai(get_data):
 
         encoded_base64_images = encode_image_to_base64(generated_images)
 
-        ret_dict = get_dict_for_generation(summarized_text_list, encoded_base64_images)
+        ret_dict = get_dict_for_generation(project_id, encoded_ref_image, input_text_list, encoded_base64_images)
 
         return ret_dict
