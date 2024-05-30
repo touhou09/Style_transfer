@@ -254,6 +254,16 @@ def encode_image_to_base64(image_list):
         
     return encoded_image_list
 
+def encode_single_image_to_base64(signle_image):
+
+    img_byte_array = io.BytesIO()
+    signle_image.save(img_byte_array, format='PNG')
+    img_byte_array = img_byte_array.getvalue()
+    encoded_img_data = base64.b64encode(img_byte_array)
+    encoded_img_str = encoded_img_data.decode('utf-8')
+        
+    return encoded_img_str
+
 
 def load_images_from_path(image_path_list:list):
     loaded_image_list = []
@@ -261,6 +271,10 @@ def load_images_from_path(image_path_list:list):
         _img = Image.open(image_path)
         loaded_image_list.append(_img)
     return loaded_image_list
+
+def load_single_image_from_path(image_path):
+    _img = Image.open(image_path)
+    return _img
     
 # ============================================================================================
 
@@ -273,17 +287,18 @@ def get_dict_for_retrieval(summarized_text, image_paths, encoded_images):
         
     return ret_dict
 
-def get_dict_for_generation(summarized_texts, encoded_images):
+def get_dict_for_generation(project_id, encoded_ref_image, input_text_list, encoded_images):
     ret_dict = {}
+    ret_dict['projectId'] = project_id
+    ret_dict['exampleImage'] = encoded_ref_image
     ret_dict['generatedItems'] = []
     for idx in range(len(encoded_images)):
-        ret_dict['generatedItems'].append({"index": idx, "summarizedText": summarized_texts[idx], "generatedImage": encoded_images[idx]})
+        ret_dict['generatedItems'].append({"index": idx, "originalPrompt": input_text_list[idx], "generatedImage": encoded_images[idx]})
         
     return ret_dict
 
 def get_paired_prompt(ref_image_path):
-    
-    
+
     ref_image_id = ref_image_path.split('/')[-1]
 
     df = pd.read_parquet('./metadata.parquet')
