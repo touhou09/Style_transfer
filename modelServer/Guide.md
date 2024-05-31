@@ -23,14 +23,17 @@ requirements.txt 추후 업데이트 예정
   "summarizedExampleText": "요약된 텍스트",
   "content": [
     {
+      "index": "0",
       "path": "이미지 데이터 0에 대한 경로 (로컬 머신에서 전송할 이미지를 저장한 경로)",
       "data": "이미지 데이터 0 (Base64 인코딩)"
     },
     {
+      "index": "1",
       "path": "이미지 데이터 1에 대한 경로 (로컬 머신에서 전송할 이미지를 저장한 경로)",
       "data": "이미지 데이터 1 (Base64 인코딩)"
     },
     {
+      "index": "2",
       "path": "이미지 데이터 2에 대한 경로 (로컬 머신에서 전송할 이미지를 저장한 경로)",
       "data": "이미지 데이터 2 (Base64 인코딩)"
     }
@@ -43,16 +46,10 @@ requirements.txt 추후 업데이트 예정
 **input from service**
 ```json
 {
-<<<<<<< HEAD
   "task": "retrieval or generation",
   "projectId" : "id",
   "exampleImage" : "encoding image",
   "exampleImagePath": "이미지 데이터에 대한 경로 (로컬 머신에서 전송할 이미지를 저장한 경로)",
-=======
-  "projectId" : "id(들어온거 그대로 사용)",
-  "task": "retrieval or generation(라우터에서 만듬) -> 따로 수정 x",
-  "exampleImagePath": "이미지 데이터에 대한 경로 (로컬 머신에서 전송할 이미지를 저장한 경로",
->>>>>>> bd2f29c (guide done)
   "basicItems": [
     {
       "index": 0,
