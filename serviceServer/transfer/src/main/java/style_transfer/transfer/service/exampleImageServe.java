@@ -22,7 +22,7 @@ public class exampleImageServe {
     private final WebClient webClient;
 
     @Autowired
-    public exampleImageServe(WebClient.Builder webClientBuilder, @Value("${image.service.url}") String baseUrl) {
+    public exampleImageServe(WebClient.Builder webClientBuilder, @Value("${fastapi.url}") String baseUrl) {
         this.webClient = webClientBuilder.baseUrl(baseUrl)
                 .build();
     }
