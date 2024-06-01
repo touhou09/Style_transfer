@@ -15,7 +15,7 @@ async def example_images(request: TokenRequestDto) -> ImageResponseDto:
     data['task'] = 'retrieval'
     
     # ai 함수 호출
-    tmp = ai(data)
+    tmp = ai.ai(data)
     
     # 응답 객체 생성
     # summury한 text, [id(path), 인코딩 이미지 string]
