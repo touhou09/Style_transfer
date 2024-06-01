@@ -19,7 +19,6 @@ class generatedItem(BaseModel):
 
 # 최초 예시이미지 제시 시 사용하는 prompt 전달 dto 
 class TokenRequestDto(BaseModel):
-    # token: str
     text: str
 
 # 예시 이미지 전달 dto
