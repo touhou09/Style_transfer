@@ -56,7 +56,7 @@ public class UserService {
 
     public Mono<String> getEmailFromToken(String token) {
         return webClient.get()
-                .uri("https://www.googleapis.com/oauth2/v1/userinfo?alt=json")
+                .uri("/oauth2/v1/userinfo?alt=json")
                 .header("Authorization", "Bearer " + token)
                 .retrieve()
                 .bodyToMono(Map.class)
@@ -69,22 +69,21 @@ public class UserService {
                 });
     }
 
-    public Mono<Void> saveProject(String token, generatedImageResponseDto project) {
-        return getEmailFromToken(token)
+    public Mono<Void> saveProject(String token, generatedImageResponseDto response) {
+        return  getEmailFromToken(token)
                 .flatMap(email -> userRepository.findByEmail(email)
                         .flatMap(user -> {
-                            user.getProjects().add(project);
+                            user.getProjects().add(response);
                             return userRepository.save(user);
                         })
                         .switchIfEmpty(Mono.defer(() -> {
                             User newUser = User.builder()
                                     .email(email)
-                                    .projects(List.of(project))
+                                    .projects(List.of(response))
                                     .build();
                             return userRepository.save(newUser);
                         }))
-                )
-                .then();
+                ).then();
     }
 
     public Mono<User> getUserByEmail(String email) {
