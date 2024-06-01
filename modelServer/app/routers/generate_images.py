@@ -13,7 +13,7 @@ async def generate_images(request: PromptRequestDto) -> GeneratedImageResponseDt
     data['task'] = 'generation'
     
     # ai 함수 호출
-    result = ai(data)
+    result = ai.ai(data)
     
     # 생성된 이미지와 함께 응답 객체 생성
     response = GeneratedImageResponseDto(
