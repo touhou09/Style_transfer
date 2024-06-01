@@ -15,14 +15,10 @@ async def example_images(request: TokenRequestDto) -> ImageResponseDto:
     data['task'] = 'retrieval'
     
     # ai 함수 호출
-<<<<<<< HEAD
-    tmp = ai.ai(data)
-=======
     try:
-        tmp = ai(data)
+        tmp = ai.ai(data)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
->>>>>>> 4eac163 (asdf)
     
     # 응답 객체 생성
     try:
