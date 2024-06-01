@@ -29,7 +29,7 @@ def get_dict_for_retrieval(summarized_text, image_paths, encoded_images):
     ret_dict['summarizedExampleText'] = summarized_text
     ret_dict['content'] = []
     for idx in range(len(encoded_images)):
-        ret_dict['content'].append({"id": idx+1, "path": image_paths[idx], "data": encoded_images[idx]})
+        ret_dict['content'].append({"id": idx, "path": image_paths[idx], "data": encoded_images[idx]})
         
     return ret_dict
 
@@ -37,7 +37,7 @@ def get_dict_for_generation(summarized_texts, encoded_images):
     ret_dict = {}
     ret_dict['generatedItems'] = []
     for idx in range(len(encoded_images)):
-        ret_dict['generatedItems'].append({"index": idx+1, "summarizedText": summarized_texts[idx], "generatedImage": encoded_images[idx]})
+        ret_dict['generatedItems'].append({"index": idx, "summarizedText": summarized_texts[idx], "generatedImage": encoded_images[idx]})
         
     return ret_dict
 
