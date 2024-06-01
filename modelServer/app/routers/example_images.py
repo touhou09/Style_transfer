@@ -1,5 +1,5 @@
 from models import Image, ImageResponseDto, TokenRequestDto
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from typing import List
 import ai
 
@@ -9,24 +9,43 @@ router = APIRouter()
 async def example_images(request: TokenRequestDto) -> ImageResponseDto:
 
     # request 데이터를 dictionary로 변환
-    data = request.model_dump(dict)
+    data = request.dict()
     
     # task : retrieval을 data에 추가
     data['task'] = 'retrieval'
     
     # ai 함수 호출
+<<<<<<< HEAD
     tmp = ai.ai(data)
+=======
+    try:
+        tmp = ai(data)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+>>>>>>> 4eac163 (asdf)
     
     # 응답 객체 생성
-    # summury한 text, [id(path), 인코딩 이미지 string]
-    response = ImageResponseDto(
-        summaryText=tmp.get("summarizedExampleText"),
-        images=[
+    try:
+        summary_text = tmp["summarizedExampleText"]
+        if isinstance(summary_text, list):
+            summary_text = " ".join(summary_text)  # 리스트인 경우 문자열로 변환
+        
+        images_list = tmp["content"]
+        images = [
             Image(
-                id=str(item.get("path")),
-                data=item.get("data")
-            ) for item in tmp.get("content", [])
+                id=str(item["path"]),
+                data=item["data"]
+            ) for item in images_list
         ]
-    )
+        
+        response = ImageResponseDto(
+            summaryText=summary_text,
+            images=images
+        )
+        
+    except KeyError as e:
+        raise HTTPException(status_code=500, detail=f"Missing expected data in response: {str(e)}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Unexpected error occurred: {str(e)}")
     
     return response
