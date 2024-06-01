@@ -35,5 +35,4 @@ class PromptRequestDto(BaseModel):
 # 생성한 이미지를 prompt와 함께 전달하는 dto
 class GeneratedImageResponseDto(BaseModel):
     projectId: str
-    exampleImage: str  # 해당 프로젝트와 관련된 공통 이미지 데이터 (Base64 인코딩된 이미지 데이터)
     generatedItems: List[generatedItem]
