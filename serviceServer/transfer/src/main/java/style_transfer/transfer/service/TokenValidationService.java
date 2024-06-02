@@ -20,8 +20,8 @@ public class TokenValidationService {
 
     public boolean validateToken(String token) {
         try {
-            String url = "https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=" + token;
-            Map<String, String> tokenInfo = restTemplate.getForObject(url, Map.class);
+            String url = "https://oauth2.googleapis.com/tokeninfo?id_token=" + token;
+            Map tokenInfo = restTemplate.getForObject(url, Map.class);
 
             return tokenInfo != null && this.clientId.equals(tokenInfo.get("aud"));
         } catch (HttpClientErrorException e) {
@@ -31,8 +31,13 @@ public class TokenValidationService {
     }
 
     public String extractEmailFromToken(String token) {
-        String url = "https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=" + token;
-        Map<String, String> tokenInfo = restTemplate.getForObject(url, Map.class);
-        return tokenInfo != null ? tokenInfo.get("email") : null;
+        try {
+            String url = "https://oauth2.googleapis.com/tokeninfo?id_token=" + token;
+            Map tokenInfo = restTemplate.getForObject(url, Map.class);
+            return tokenInfo != null ? (String) tokenInfo.get("email") : null;
+        } catch (HttpClientErrorException e) {
+            // 오류 처리, 토큰에서 이메일 추출 실패
+            return null;
+        }
     }
 }

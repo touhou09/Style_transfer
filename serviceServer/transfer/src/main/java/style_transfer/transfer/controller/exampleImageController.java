@@ -8,10 +8,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
-import style_transfer.transfer.repository.image;
 import style_transfer.transfer.repository.tokenRequestDto;
 import style_transfer.transfer.service.exampleImageServe;
 
+import java.awt.*;
 import java.util.Collections;
 
 @RestController
@@ -27,17 +27,20 @@ public class exampleImageController {
     }
 
     @PostMapping("/images")
-    public Mono<ResponseEntity<PageImpl<image>>> handleRequest(@RequestBody tokenRequestDto requestDto,
-                                                               @RequestParam int page,
-                                                               @RequestParam int size) {
+    public Mono<ResponseEntity<? extends PageImpl<? extends Object>>> handleRequest(@RequestBody tokenRequestDto requestDto,
+                                                                                    @RequestParam int page,
+                                                                                    @RequestParam int size) {
         return imageService.getImageResponse(requestDto.getText(), page, size)
-                .map(ResponseEntity::ok)
-                .onErrorResume(e -> {
-                    logger.error("Error processing request to /images", e);
-
-                    // 빈 페이지를 생성하여 반환
-                    PageImpl<image> emptyPage = new PageImpl<>(Collections.emptyList(), PageRequest.of(page, size), 0);
-                    return Mono.just(ResponseEntity.ok(emptyPage));
+                .doOnNext(response -> logger.info("Received response: {}", response))
+                .map(response -> {
+                    if (response != null && !response.isEmpty()) {
+                        return ResponseEntity.ok(response);
+                    } else {
+                        // response가 비어있는 경우 빈 페이지 반환
+                        logger.warn("Received empty response from imageService");
+                        PageImpl<Image> emptyPage = new PageImpl<>(Collections.emptyList(), PageRequest.of(page, size), 0);
+                        return ResponseEntity.ok(emptyPage);
+                    }
                 });
     }
 }

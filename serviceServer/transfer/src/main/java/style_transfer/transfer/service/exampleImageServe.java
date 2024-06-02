@@ -20,16 +20,17 @@ import java.util.List;
 @Service
 public class exampleImageServe {
     private final WebClient webClient;
+    private final Logger logger = LoggerFactory.getLogger(exampleImageServe.class);
 
     @Autowired
     public exampleImageServe(WebClient.Builder webClientBuilder, @Value("${fastapi.url}") String baseUrl) {
         this.webClient = webClientBuilder.baseUrl(baseUrl)
+                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)) // 16MB로 설정
                 .build();
     }
 
     public Mono<PageImpl<image>> getImageResponse(String text, int page, int size) {
         tokenRequestDto requestDto = new tokenRequestDto(text);
-        Logger logger = LoggerFactory.getLogger(exampleImageServe.class);
 
         return this.webClient.post()
                 .uri("/exampleImages")
@@ -38,12 +39,13 @@ public class exampleImageServe {
                 .onStatus(status -> status.is4xxClientError() || status.is5xxServerError(),
                         clientResponse -> clientResponse.bodyToMono(String.class).flatMap(errorBody -> {
                             String errorMessage = "Error: " + clientResponse.statusCode() + " - " + errorBody;
+                            logger.error(errorMessage);
                             return Mono.error(new RuntimeException(errorMessage));
                         }))
                 .bodyToMono(imageResponseDto.class)
                 .map(responseDto -> {
                     Pageable pageable = PageRequest.of(page, size);
-                    List<image> images = responseDto.getImages().getContent();
+                    List<image> images = responseDto.getImages();
                     int start = (int) pageable.getOffset();
                     int end = Math.min((start + pageable.getPageSize()), images.size());
                     List<image> subList = images.subList(start, end);
@@ -51,11 +53,19 @@ public class exampleImageServe {
                 })
                 .onErrorResume(WebClientResponseException.class, e -> {
                     String errorMessage = "WebClient error: " + e.getStatusCode() + " - " + e.getResponseBodyAsString();
-                    return Mono.error(new RuntimeException(errorMessage));
+                    logger.error(errorMessage, e);
+                    return Mono.just(createEmptyPage(page, size));
                 })
                 .onErrorResume(Exception.class, e -> {
                     String errorMessage = "General error: " + e.getMessage();
-                    return Mono.error(new RuntimeException(errorMessage));
+                    logger.error(errorMessage, e);
+                    return Mono.just(createEmptyPage(page, size));
                 });
     }
+
+    private PageImpl<image> createEmptyPage(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return new PageImpl<>(List.of(), pageable, 0);
+    }
 }
+
