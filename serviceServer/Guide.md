@@ -94,7 +94,8 @@
     },
     {
       "index": 1,
-      "promptText": "Example prompt 2"
+      "promptText": "Example prompt 2",
+      "generatedImage": "base64encodedImageData"
     }
   ]
 }
