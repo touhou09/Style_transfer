@@ -2,7 +2,6 @@ from models import Image, ImageResponseDto, TokenRequestDto
 from fastapi import APIRouter, HTTPException
 from typing import List
 import ai
-import ai_dummy
 
 router = APIRouter()
 
