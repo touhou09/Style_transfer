@@ -13,7 +13,7 @@ class basicItem(BaseModel):
 
 # 프롬프트와 생성된 이미지 전송 시 model
 class generatedItem(BaseModel):
-    index: str  # 각 PromptItem의 고유 ID
+    index: int  # 각 PromptItem의 고유 ID
     promptText: str  # 프롬프트 텍스트
     generatedImage: str  # Base64 인코딩된 이미지 데이터
 
