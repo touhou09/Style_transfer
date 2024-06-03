@@ -12,6 +12,7 @@ def ai(get_data):
     # received_dict는 파이썬 딕셔너리라고 가정
     # received_dict의 'task' 에 retrieval인지 generation인지에 대한 정보가 있다고 가정
     if received_dict['task'] == 'retrieval':
+        print('retrieval start')
         example_text = received_dict['text'] # retrieval: example prompt in 'text'
         summarized_prompt = summarize_texts([example_text], gpt_client, seed_val=123)
 
@@ -21,20 +22,26 @@ def ai(get_data):
                                                                          [classified_genre], device)
         
         topk_img_path_list = retrieve_topk_image_path(example_text, clip_model, image_tensor_dict,
-                                                      image_path_dict, classified_genre, device)
+                                                      image_path_dict, classified_genre, device, k_val=100)
         
         loaded_images = load_images_from_path(topk_img_path_list)
         encoded_base64_images = encode_image_to_base64(loaded_images)
 
-        ret_dict = get_dict_for_retrieval(summarized_prompt, topk_img_path_list, encoded_base64_images)
+        ret_dict = get_dict_for_retrieval(summarized_prompt[0], topk_img_path_list, encoded_base64_images)
+        ###
+        for k, v in ret_dict.items():
+            print(f"key: {k}")
+            if k =='summarizedExampleText':
+                print(v)
+            print(f"type of val: {type(v)}")
+        ###
         return ret_dict
 
     elif received_dict['task'] == 'generation':
-
-        ref_image_path = received_dict['exampleImagePath']
+        print('generation start')
+        ref_image_path = received_dict['id']
 
         project_id = received_dict['projectId']
-        encoded_ref_image = received_dict['exampleImage']
         
         ref_prompt = get_paired_prompt(ref_image_path)
 
@@ -56,6 +63,6 @@ def ai(get_data):
 
         encoded_base64_images = encode_image_to_base64(generated_images)
 
-        ret_dict = get_dict_for_generation(project_id, encoded_ref_image, input_text_list, encoded_base64_images)
+        ret_dict = get_dict_for_generation(project_id, input_text_list, encoded_base64_images)
 
         return ret_dict
