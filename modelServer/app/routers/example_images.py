@@ -2,6 +2,7 @@ from models import Image, ImageResponseDto, TokenRequestDto
 from fastapi import APIRouter, HTTPException
 from typing import List
 import ai
+import ai_dummy
 
 router = APIRouter()
 
@@ -16,7 +17,9 @@ async def example_images(request: TokenRequestDto) -> ImageResponseDto:
     
     # ai 함수 호출
     try:
+        # tmp = ai_dummy.ai(data)
         tmp = ai.ai(data)
+        
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
@@ -44,4 +47,9 @@ async def example_images(request: TokenRequestDto) -> ImageResponseDto:
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Unexpected error occurred: {str(e)}")
     
+    # print(response.summaryText)
+    # for image in response.images:
+    #     print(image.id)
+    #     print(image.data[:10])
+
     return response
