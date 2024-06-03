@@ -286,10 +286,9 @@ def get_dict_for_retrieval(summarized_text, image_paths, encoded_images):
         
     return ret_dict
 
-def get_dict_for_generation(project_id, encoded_ref_image, input_text_list, encoded_images):
+def get_dict_for_generation(project_id, input_text_list, encoded_images):
     ret_dict = {}
     ret_dict['projectId'] = project_id
-    ret_dict['exampleImage'] = encoded_ref_image
     ret_dict['generatedItems'] = []
     for idx in range(len(encoded_images)):
         ret_dict['generatedItems'].append({"index": idx, "originalPrompt": input_text_list[idx], "generatedImage": encoded_images[idx]})
