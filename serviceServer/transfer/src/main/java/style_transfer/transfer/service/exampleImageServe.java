@@ -13,7 +13,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.publisher.Mono;
 import style_transfer.transfer.repository.image;
 import style_transfer.transfer.repository.imageResponseDto;
-import style_transfer.transfer.repository.tokenRequestDto;
+import style_transfer.transfer.repository.exampleRequestDto;
 
 import java.util.List;
 
@@ -25,16 +25,16 @@ public class exampleImageServe {
     @Autowired
     public exampleImageServe(WebClient.Builder webClientBuilder, @Value("${fastapi.url}") String baseUrl) {
         this.webClient = webClientBuilder.baseUrl(baseUrl)
-                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)) // 16MB로 설정
+                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(100 * 1024 * 1024)) // 16MB로 설정
                 .build();
     }
 
     public Mono<PageImpl<image>> getImageResponse(String text, int page, int size) {
-        tokenRequestDto requestDto = new tokenRequestDto(text);
+        exampleRequestDto requestDto = new exampleRequestDto(text);
 
         return this.webClient.post()
                 .uri("/exampleImages")
-                .body(Mono.just(requestDto), tokenRequestDto.class)
+                .body(Mono.just(requestDto), exampleRequestDto.class)
                 .retrieve()
                 .onStatus(status -> status.is4xxClientError() || status.is5xxServerError(),
                         clientResponse -> clientResponse.bodyToMono(String.class).flatMap(errorBody -> {

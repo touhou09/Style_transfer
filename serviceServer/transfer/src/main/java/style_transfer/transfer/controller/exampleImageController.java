@@ -8,7 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
-import style_transfer.transfer.repository.tokenRequestDto;
+import style_transfer.transfer.repository.exampleRequestDto;
 import style_transfer.transfer.service.exampleImageServe;
 
 import java.awt.*;
@@ -27,7 +27,7 @@ public class exampleImageController {
     }
 
     @PostMapping("/images")
-    public Mono<ResponseEntity<? extends PageImpl<? extends Object>>> handleRequest(@RequestBody tokenRequestDto requestDto,
+    public Mono<ResponseEntity<? extends PageImpl<? extends Object>>> handleRequest(@RequestBody exampleRequestDto requestDto,
                                                                                     @RequestParam int page,
                                                                                     @RequestParam int size) {
         return imageService.getImageResponse(requestDto.getText(), page, size)

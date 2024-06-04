@@ -11,7 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class promptRequestDto {
-    private String token;
     private String projectId; // 프로젝트 ID
     private String id;
     private List<basicItem> basicItems; // 해당 프로젝트와 관련된 프롬프트 항목들

@@ -19,52 +19,40 @@ import java.util.UUID;
 public class ImageGenerationService {
 
     private final WebClient webClient;
-    private final UserService userService; // UserService 주입
+    private final ProjectService projectService;
 
     private static final Logger log = LoggerFactory.getLogger(ImageGenerationService.class);
 
     @Autowired
-    public ImageGenerationService(WebClient.Builder webClientBuilder, UserService userService, @Value("${fastapi.url}") String baseUrl) {
+    public ImageGenerationService(WebClient.Builder webClientBuilder, ProjectService projectService, @Value("${fastapi.url}") String baseUrl) {
         this.webClient = webClientBuilder
                 .baseUrl(baseUrl)
                 .exchangeStrategies(ExchangeStrategies.builder()
-                        .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)) // 16MB로 설정
+                        .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(100 * 1024 * 1024))
                         .build())
                 .build();
-        this.userService = userService;
+        this.projectService = projectService;
     }
 
-    public Mono<generatedImageResponseDto> generateImages(promptRequestDto request) {
-        // projectId가 없다면 생성 및 설정
-        if (request.getProjectId() == null || request.getProjectId().isEmpty()) {
-            String projectId = UUID.randomUUID().toString();
-            request.setProjectId(projectId);
-        }
+        public Mono<generatedImageResponseDto> generateImages(promptRequestDto request) {
+            if (request.getProjectId() == null || request.getProjectId().isEmpty()) {
+                String projectId = UUID.randomUUID().toString();
+                request.setProjectId(projectId);
+            }
 
-
-        // 외부 API로 POST 요청을 보내고 응답을 처리
-        return webClient.post()
-                .uri("/generate-images")
-                .body(Mono.just(request), promptRequestDto.class)
-                .retrieve()
-                .onStatus(HttpStatusCode::isError, response -> response.bodyToMono(String.class)
-                        .flatMap(errorBody -> Mono.error(new RuntimeException("API call failed: " + errorBody))))
-                .bodyToMono(generatedImageResponseDto.class)
-                .flatMap(response -> {
-                    response.setTime(LocalDateTime.now());
-                    response.setProjectId(request.getProjectId());
-
-                    // 토큰이 있는 경우에만 saveProject 함수 실행
-                    if (request.getToken() != null && !request.getToken().isEmpty()) {
-                        return userService.saveProject(request.getToken(), response)
+            return webClient.post()
+                    .uri("/generate-images")
+                    .body(Mono.just(request), promptRequestDto.class)
+                    .retrieve()
+                    .onStatus(HttpStatusCode::isError, response -> response.bodyToMono(String.class)
+                            .flatMap(errorBody -> Mono.error(new RuntimeException("API call failed: " + errorBody))))
+                    .bodyToMono(generatedImageResponseDto.class)
+                    .flatMap(response -> {
+                        response.setTime(LocalDateTime.now());
+                        response.setProjectId(request.getProjectId());
+                        return projectService.saveProject(request.getProjectId(), response)
                                 .thenReturn(response);
-                    } else {
-                        return Mono.just(response);
-                    }
-                })
-                .doOnError(error -> {
-                    // Log error
-                    log.error("Error: ", error);
-                });
+                    })
+                    .doOnError(error -> log.error("Error: ", error));
+        }
     }
-}

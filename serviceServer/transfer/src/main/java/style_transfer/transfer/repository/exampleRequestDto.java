@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class tokenRequestDto {
+public class exampleRequestDto {
     private String text;
 }
