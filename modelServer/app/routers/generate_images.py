@@ -2,10 +2,10 @@ from fastapi import APIRouter
 from typing import List
 from models import GeneratedImageResponseDto, PromptRequestDto, basicItem, generatedItem
 import ai
+import dummy.ai_dummy
 import json
 # 라우터 인스턴스 생성
 router = APIRouter()
-
 
 @router.post("/generate-images", response_model=GeneratedImageResponseDto)
 async def generate_images(request: PromptRequestDto) -> GeneratedImageResponseDto:
