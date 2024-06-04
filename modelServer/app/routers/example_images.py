@@ -1,4 +1,4 @@
-from models import Image, ImageResponseDto, TokenRequestDto
+from models import Image, ImageResponseDto, exampleRequestDto
 from fastapi import APIRouter, HTTPException
 from typing import List
 import ai
@@ -6,7 +6,7 @@ import ai
 router = APIRouter()
 
 @router.post("/exampleImages", response_model=ImageResponseDto)
-async def example_images(request: TokenRequestDto) -> ImageResponseDto:
+async def example_images(request: exampleRequestDto) -> ImageResponseDto:
 
     # request 데이터를 dictionary로 변환
     data = request.dict()

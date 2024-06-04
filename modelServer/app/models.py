@@ -18,7 +18,7 @@ class generatedItem(BaseModel):
     generatedImage: str  # Base64 인코딩된 이미지 데이터
 
 # 최초 예시이미지 제시 시 사용하는 prompt 전달 dto 
-class TokenRequestDto(BaseModel):
+class exampleRequestDto(BaseModel):
     text: str
 
 # 예시 이미지 전달 dto
