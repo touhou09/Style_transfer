@@ -1,187 +1,252 @@
 ### API 문서
 
-### exampleImageController
-이미지 관련 요청을 처리하는 컨트롤러입니다.
+### ProjectController
 
-**엔드포인트:**
-- `POST /api/images`: 이미지를 처리하는 요청.
+#### 엔드포인트: 프로젝트 목록 조회
 
-**예제 요청:**
-```json
-{
-  "text": "Example text"
-}
-```
+- **URL**: `/api/projects`
+- **Method**: GET
+- **Description**: 프로젝트 목록을 페이지네이션하여 반환합니다.
+- **Request Parameters**:
+  - `page` (int): 요청 페이지 번호 (0부터 시작)
+  - `size` (int): 페이지당 항목 수
 
-**예제 응답:**
-```json
-{
-  "content": [],
-  "pageable": {
-    "sort": {
-      "unsorted": true,
-      "sorted": false,
-      "empty": true
-    },
-    "offset": 0,
-    "pageNumber": 0,
-    "pageSize": 6,
-    "paged": true,
-    "unpaged": false
-  },
-  "last": true,
-  "totalPages": 1,
-  "totalElements": 0,
-  "first": true,
-  "size": 6,
-  "number": 0,
-  "sort": {
-    "unsorted": true,
-    "sorted": false,
-    "empty": true
-  },
-  "numberOfElements": 0,
-  "empty": true
-}
-```
-결과가 빈 페이지로 나옴, 여기서 content는 아래와 같음
-```json
-{
-  "summary": "Image summary",
-  "images": [
+- **Request Example**:
+  ```
+  GET /api/projects?page=0&size=10
+  ```
+
+- **Response**:
+  - **Status**: 200 OK
+  - **Body**:
+    ```json
     {
-      "id": "image1",
-      "data": "base64encodedImageData"
+      "content": [
+        {
+          "projectId": "projectId_value",
+          "generatedItems": [
+            {
+              "imageUrl": "https://example.com/image1.jpg",
+              "description": "Description of image 1"
+            }
+          ],
+          "time": "2023-06-03T12:00:00"
+        }
+      ],
+      "pageable": {
+        "sort": {
+          "empty": true,
+          "unsorted": true,
+          "sorted": false
+        },
+        "offset": 0,
+        "pageNumber": 0,
+        "pageSize": 10,
+        "paged": true,
+        "unpaged": false
+      },
+      "totalPages": 1,
+      "totalElements": 1,
+      "last": true,
+      "size": 10,
+      "number": 0,
+      "sort": {
+        "empty": true,
+        "unsorted": true,
+        "sorted": false
+      },
+      "numberOfElements": 1,
+      "first": true,
+      "empty": false
     }
-  ]
-}
+    ```
 
-```
+#### 엔드포인트: 특정 프로젝트 조회
+
+- **URL**: `/api/project/{projectId}`
+- **Method**: GET
+- **Description**: 특정 프로젝트의 세부 사항을 반환합니다.
+- **Path Variables**:
+  - `projectId` (String): 프로젝트 ID
+
+- **Request Example**:
+  ```
+  GET /api/project/12345
+  ```
+
+- **Response**:
+  - **Status**: 200 OK
+  - **Body**:
+    ```json
+    {
+      "projectId": "12345",
+      "generatedItems": [
+        {
+          "imageUrl": "https://example.com/image1.jpg",
+          "description": "Description of image 1"
+        }
+      ],
+      "time": "2023-06-03T12:00:00"
+    }
+    ```
+
+  - **Status**: 404 Not Found (프로젝트가 존재하지 않을 경우)
+
+### exampleImageController
+
+#### 엔드포인트: 이미지 생성 요청
+
+- **URL**: `/api/images`
+- **Method**: POST
+- **Description**: 이미지 생성을 요청하고, 결과를 페이지네이션하여 반환합니다.
+- **Request Body**:
+  - `exampleRequestDto` (JSON):
+    ```json
+    {
+      "text": "example text"
+    }
+    ```
+
+- **Request Parameters**:
+  - `page` (int): 요청 페이지 번호 (0부터 시작)
+  - `size` (int): 페이지당 항목 수
+
+- **Request Example**:
+  ```
+  POST /api/images?page=0&size=10
+  Content-Type: application/json
+
+  {
+    "text": "example text"
+  }
+  ```
+
+- **Response**:
+  - **Status**: 200 OK
+  - **Body**:
+    ```json
+    {
+      "content": [
+        {
+          "imageUrl": "https://example.com/generatedImage1.jpg",
+          "description": "Generated image 1"
+        }
+      ],
+      "pageable": {
+        "sort": {
+          "empty": true,
+          "unsorted": true,
+          "sorted": false
+        },
+        "offset": 0,
+        "pageNumber": 0,
+        "pageSize": 10,
+        "paged": true,
+        "unpaged": false
+      },
+      "totalPages": 1,
+      "totalElements": 1,
+      "last": true,
+      "size": 10,
+      "number": 0,
+      "sort": {
+        "empty": true,
+        "unsorted": true,
+        "sorted": false
+      },
+      "numberOfElements": 1,
+      "first": true,
+      "empty": false
+    }
+    ```
+
+  - **Status**: 200 OK (빈 페이지 반환):
+    ```json
+    {
+      "content": [],
+      "pageable": {
+        "sort": {
+          "empty": true,
+          "unsorted": true,
+          "sorted": false
+        },
+        "offset": 0,
+        "pageNumber": 0,
+        "pageSize": 10,
+        "paged": true,
+        "unpaged": false
+      },
+      "totalPages": 1,
+      "totalElements": 0,
+      "last": true,
+      "size": 10,
+      "number": 0,
+      "sort": {
+        "empty": true,
+        "unsorted": true,
+        "sorted": false
+      },
+      "numberOfElements": 0,
+      "first": true,
+      "empty": true
+    }
+    ```
 
 ### ImageGenerationController
 
-**엔드포인트:**
-- `POST /api/generate-images`: 이미지를 생성하는 요청.
+#### 엔드포인트: 이미지 생성
 
-**예제 요청:**
-```json
-{
-  "token": "auth_token",
-  "projectId": "project123",
-  "id": "이전에 선택한 이미지의 id(경로)",
-  "basicItems": [
+- **URL**: `/api/generate-images`
+- **Method**: POST
+- **Description**: 프롬프트 요청에 따라 이미지를 생성하고, 결과를 반환합니다.
+- **Request Body**:
+  - `promptRequestDto` (JSON):
+    ```json
     {
-      "index": 0,
-      "promptText": "Example prompt 1"
-    },
-    {
-      "index": 1,
-      "promptText": "Example prompt 2"
+      "projectId": "12345",
+      "id": "exampleId",
+      "basicItems": [
+        {
+          "index": 1,
+          "promptText": "Generate an image of a sunset"
+        }
+      ]
     }
-  ]
-}
-```
+    ```
 
-**예제 응답:**
-```json
-{
-  "projectId": "project123",
-  "generatedItems": [
+- **Request Example**:
+  ```
+  POST /api/generate-images
+  Content-Type: application/json
+
+  {
+    "projectId": "12345",
+    "id": "exampleId",
+    "basicItems": [
+      {
+        "index": 1,
+        "promptText": "Generate an image of a sunset"
+      }
+    ]
+  }
+  ```
+
+- **Response**:
+  - **Status**: 200 OK
+  - **Body**:
+    ```json
     {
-      "index": 0,
-      "promptText": "Example prompt 1",
-      "generatedImage": "base64encodedImageData"
-    },
-    {
-      "index": 1,
-      "promptText": "Example prompt 2",
-      "generatedImage": "base64encodedImageData"
-    }
-  ]
-}
-```
-
-#### `UserController`
-
-- **Endpoint:** `/user/google`
-- **Method:** POST
-- **Input:**
-  ```json
-  {
-    "code": "string"
-  }
-  ```
-- **Output:**
-  ```json
-  {
-    "accessToken": "string"
-  }
-  ```
-
-- **Endpoint:** `/user/info`
-- **Method:** GET
-- **Headers:**
-  ```json
-  {
-    "Authorization": "Bearer token"
-  }
-  ```
-- **Output:**
-  ```json
-  {
-    "id": "string",
-    "email": "string",
-    "name": "string",
-    "profileImage": "string"
-  }
-  ```
-
-- **Endpoint:** `/user/projects`
-- **Method:** GET
-- **Headers:**
-  ```json
-  {
-    "Authorization": "Bearer token"
-  }
-  ```
-- **Output:**
-  ```json
-  [
-    {
-      "projectId": "string",
-      "summary": "string",
-      "exampleImage": "string",
+      "projectId": "12345",
       "generatedItems": [
         {
-          "index": 0,
-          "generatedImage": "string"
+          "imageUrl": "https://example.com/sunset1.jpg",
+          "description": "A beautiful sunset over the mountains"
+        },
+        {
+          "imageUrl": "https://example.com/sunset2.jpg",
+          "description": "Sunset with vibrant colors"
         }
       ],
-      "time": "2023-05-27T14:57:53.123"
+      "time": "2024-06-03T12:00:00"
     }
-  ]
-  ```
-
-- **Endpoint:** `/user/project/{projectId}`
-- **Method:** GET
-- **Headers:**
-  ```json
-  {
-    "Authorization": "Bearer token"
-  }
-  ```
-- **Output:**
-  ```json
-  {
-    "projectId": "string",
-    "summary": "string",
-    "exampleImage": "string",
-    "generatedItems": [
-      {
-        "index": 0,
-        "generatedImage": "string"
-      }
-    ],
-    "time": "2023-05-27T14:57:53.123"
-  }
-  ```
+    ```
