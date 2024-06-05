@@ -36,7 +36,6 @@ public class exampleImageController {
                     if (response != null && !response.isEmpty()) {
                         return ResponseEntity.ok(response);
                     } else {
-                        // response가 비어있는 경우 빈 페이지 반환
                         logger.warn("Received empty response from imageService");
                         PageImpl<Image> emptyPage = new PageImpl<>(Collections.emptyList(), PageRequest.of(page, size), 0);
                         return ResponseEntity.ok(emptyPage);

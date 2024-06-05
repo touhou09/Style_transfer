@@ -9,18 +9,20 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+import style_transfer.transfer.repository.exampleRequestDto;
 import style_transfer.transfer.repository.image;
 import style_transfer.transfer.repository.imageResponseDto;
-import style_transfer.transfer.repository.exampleRequestDto;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
 public class exampleImageServe {
     private final WebClient webClient;
     private final Logger logger = LoggerFactory.getLogger(exampleImageServe.class);
+    private List<image> cachedImages = new ArrayList<>();
 
     @Autowired
     public exampleImageServe(WebClient.Builder webClientBuilder, @Value("${fastapi.url}") String baseUrl) {
@@ -30,6 +32,16 @@ public class exampleImageServe {
     }
 
     public Mono<PageImpl<image>> getImageResponse(String text, int page, int size) {
+        // 캐시에 충분한 이미지가 있는지 확인
+        if (cachedImages.size() < (page + 1) * size) {
+            return fetchImagesFromModelServer(text)
+                    .then(Mono.defer(() -> getPagedImages(page, size)));
+        } else {
+            return getPagedImages(page, size);
+        }
+    }
+
+    private Mono<Void> fetchImagesFromModelServer(String text) {
         exampleRequestDto requestDto = new exampleRequestDto(text);
 
         return this.webClient.post()
@@ -43,29 +55,27 @@ public class exampleImageServe {
                             return Mono.error(new RuntimeException(errorMessage));
                         }))
                 .bodyToMono(imageResponseDto.class)
-                .map(responseDto -> {
-                    Pageable pageable = PageRequest.of(page, size);
-                    List<image> images = responseDto.getImages();
-                    int start = (int) pageable.getOffset();
-                    int end = Math.min((start + pageable.getPageSize()), images.size());
-                    List<image> subList = images.subList(start, end);
-                    return new PageImpl<>(subList, pageable, images.size());
+                .doOnNext(responseDto -> {
+                    cachedImages.addAll(responseDto.getImages());
                 })
-                .onErrorResume(WebClientResponseException.class, e -> {
-                    String errorMessage = "WebClient error: " + e.getStatusCode() + " - " + e.getResponseBodyAsString();
-                    logger.error(errorMessage, e);
-                    return Mono.just(createEmptyPage(page, size));
-                })
-                .onErrorResume(Exception.class, e -> {
-                    String errorMessage = "General error: " + e.getMessage();
-                    logger.error(errorMessage, e);
-                    return Mono.just(createEmptyPage(page, size));
-                });
+                .then();
+    }
+
+    private Mono<PageImpl<image>> getPagedImages(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), cachedImages.size());
+
+        if (start >= cachedImages.size()) {
+            return Mono.just(createEmptyPage(page, size));
+        } else {
+            List<image> subList = new ArrayList<>(cachedImages.subList(start, end));
+            return Mono.just(new PageImpl<>(subList, pageable, cachedImages.size()));
+        }
     }
 
     private PageImpl<image> createEmptyPage(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return new PageImpl<>(List.of(), pageable, 0);
+        return new PageImpl<>(Collections.emptyList(), PageRequest.of(page, size), 0);
     }
 }
 
