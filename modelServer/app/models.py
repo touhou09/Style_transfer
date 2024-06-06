@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from typing import List, Optional
+from datetime import datetime
 
 # 예시 이미지 생성 model
 class Image(BaseModel):
@@ -36,3 +37,4 @@ class PromptRequestDto(BaseModel):
 class GeneratedImageResponseDto(BaseModel):
     projectId: str
     generatedItems: List[generatedItem]
+    time: datetime
