@@ -12,13 +12,16 @@ import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 import style_transfer.transfer.repository.exampleRequestDto;
 import style_transfer.transfer.repository.image;
 import style_transfer.transfer.repository.imageResponseDto;
+import style_transfer.transfer.RequestIdFilter;
 
 import java.util.Collections;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -48,6 +51,9 @@ class exampleImageServeTest {
     @Mock
     private WebClient.ResponseSpec responseSpec;
 
+    @Mock
+    private ServerWebExchange exchange;
+
     @Value("${fastapi.url}")
     private String baseUrl;
 
@@ -62,6 +68,10 @@ class exampleImageServeTest {
         lenient().when(webClientBuilder.exchangeStrategies(any(ExchangeStrategies.class))).thenReturn(webClientBuilder);
         lenient().when(webClientBuilder.codecs(any(Consumer.class))).thenReturn(webClientBuilder);
         lenient().when(webClientBuilder.build()).thenReturn(webClient);
+
+        // ServerWebExchange 설정
+        String requestId = UUID.randomUUID().toString();
+        when(exchange.getAttribute(RequestIdFilter.REQUEST_ID_ATTR)).thenReturn(requestId);
 
         exampleImageServe = new exampleImageServe(webClientBuilder, baseUrl);
     }
@@ -84,7 +94,7 @@ class exampleImageServeTest {
 
         when(responseSpec.bodyToMono(imageResponseDto.class)).thenReturn(Mono.just(responseDto));
 
-        Mono<PageImpl<image>> result = exampleImageServe.getImageResponse("test", 0, 10);
+        Mono<PageImpl<image>> result = exampleImageServe.getImageResponse(exchange, "test", 0, 10);
 
         StepVerifier.create(result)
                 .expectNextMatches(page -> page.getContent().contains(img1) && page.getTotalElements() == 1)
@@ -105,7 +115,7 @@ class exampleImageServeTest {
 
         when(responseSpec.bodyToMono(imageResponseDto.class)).thenReturn(Mono.error(new RuntimeException("Error")));
 
-        Mono<PageImpl<image>> result = exampleImageServe.getImageResponse("test", 0, 10);
+        Mono<PageImpl<image>> result = exampleImageServe.getImageResponse(exchange, "test", 0, 10);
 
         StepVerifier.create(result)
                 .expectError(RuntimeException.class)
