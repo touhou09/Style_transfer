@@ -1,4 +1,4 @@
-# Model server guide
+# Model server setup
 
 ## Environment Setup
 
@@ -17,7 +17,12 @@ pip install fastapi uvicorn pydantic sqlalchemy databases alembic asyncpg
 or refer requirements.txt
 ```
 
+## start server (where main.py is located)
+```　bash
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+```
 
+# DTO
 ## retrieval
 **input from service**
 ```json
