@@ -28,13 +28,15 @@ def ai(get_data):
         encoded_base64_images = encode_image_to_base64(loaded_images)
 
         ret_dict = get_dict_for_retrieval(summarized_prompt[0], topk_img_path_list, encoded_base64_images)
+        
+        ### for debugging
+        # for k, v in ret_dict.items():
+        #     print(f"key: {k}")
+        #     if k =='summarizedExampleText':
+        #         print(v)
+        #     print(f"type of val: {type(v)}")
         ###
-        for k, v in ret_dict.items():
-            print(f"key: {k}")
-            if k =='summarizedExampleText':
-                print(v)
-            print(f"type of val: {type(v)}")
-        ###
+        
         return ret_dict
 
     elif received_dict['task'] == 'generation':
