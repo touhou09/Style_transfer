@@ -5,6 +5,7 @@ import ai
 # import dummy.ai_dummy
 import json
 # 라우터 인스턴스 생성
+from datetime import datetime
 router = APIRouter()
 
 @router.post("/generate-images", response_model=GeneratedImageResponseDto)
@@ -26,7 +27,8 @@ async def generate_images(request: PromptRequestDto) -> GeneratedImageResponseDt
                 promptText=item['originalPrompt'],
                 generatedImage=item['generatedImage']
             ) for item in result['generatedItems']
-        ]
+        ],
+        time=datetime.now()
     )
 
     ## code for debugging
