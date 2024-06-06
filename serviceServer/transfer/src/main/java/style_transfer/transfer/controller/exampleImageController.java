@@ -7,12 +7,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 import style_transfer.transfer.repository.exampleRequestDto;
+import style_transfer.transfer.repository.image;
 import style_transfer.transfer.service.exampleImageServe;
 
-import java.awt.*;
 import java.util.Collections;
 
 @RestController
@@ -28,22 +27,17 @@ public class exampleImageController {
     }
 
     @PostMapping("/images")
-    public Mono<ResponseEntity<? extends PageImpl<? extends Object>>> handleRequest(@RequestBody exampleRequestDto requestDto,
-                                                                                        @RequestParam int page,
-                                                                                        @RequestParam int size,
-                                                                                        ServerWebExchange exchange) {
-            return imageService.getImageResponse(exchange, requestDto.getText(), page, size)
-                    .doOnNext(response -> logger.info("Received response: {}", response))
-                    .map(response -> {
-                        if (response != null && !response.isEmpty()) {
-                            return ResponseEntity.ok(response);
-                        } else {
-                            logger.warn("Received empty response from imageService");
-                            PageImpl<Image> emptyPage = new PageImpl<>(Collections.emptyList(), PageRequest.of(page, size), 0);
-                            return ResponseEntity.ok(emptyPage);
-                        }
-                    });
-        }
+    public ResponseEntity<Mono<PageImpl<image>>> handleRequest(@RequestBody exampleRequestDto requestDto,
+                                                               @RequestParam int page,
+                                                               @RequestParam int size) {
+        Mono<PageImpl<image>> responseMono = imageService.getImageResponse(requestDto.getText(), page, size)
+                .doOnNext(response -> logger.info("Received response: {}", response))
+                .defaultIfEmpty(new PageImpl<>(Collections.emptyList(), PageRequest.of(page, size), 0));
+
+        return ResponseEntity.ok(responseMono);
+    }
+}
+
 
 /*
 
@@ -65,5 +59,3 @@ public class exampleImageController {
                 });
     }
 */
-
-}

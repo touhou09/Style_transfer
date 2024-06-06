@@ -15,14 +15,13 @@ import java.util.List;
 public class generatedImageResponseDto {
     @Id // db에서는 "_id" : "value" 구조로 저장됨
     private String projectId;
-
     private List<generatedItem> generatedItems;
     private LocalDateTime time;
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public class generatedItem {
+    public static class generatedItem {
         private int index;
         private String promptText;
         private String generatedImage; // Base64 인코딩된 이미지 데이터
