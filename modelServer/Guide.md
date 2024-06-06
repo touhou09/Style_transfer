@@ -12,6 +12,8 @@ pip install openai
 pip install pyarrow
 pip install fastapi uvicorn pydantic sqlalchemy databases alembic asyncpg
 
+
+
 or refer requirements.txt
 ```
 
