@@ -214,18 +214,18 @@
     }
     ```
 
-- **Request Example**:
-  ```
+- **Request Example**:  
   POST /api/generate-images
   Content-Type: application/json
-
+ ```json
   {
     "projectId": "12345",
     "id": "exampleId",
     "basicItems": [
       {
-        "index": 1,
-        "promptText": "Generate an image of a sunset"
+        "index": 0,
+        "promptText": "Generate an image of a sunset",
+        "generatedImage": "generated image string"
       }
     ]
   }
@@ -239,12 +239,9 @@
       "projectId": "12345",
       "generatedItems": [
         {
-          "imageUrl": "https://example.com/sunset1.jpg",
-          "description": "A beautiful sunset over the mountains"
-        },
-        {
-          "imageUrl": "https://example.com/sunset2.jpg",
-          "description": "Sunset with vibrant colors"
+          "index": 0,
+          "promptText": "Generate an image of a sunset",
+          "generatedImage": "generated image string"
         }
       ],
       "time": "2024-06-03T12:00:00"
