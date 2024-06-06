@@ -33,7 +33,8 @@ def ai(get_data):
 
     elif received_dict['task'] == 'generation':
         print('generation start')
-
+        
+        received_dict['basicItems'].sort(key=lambda item: item['index'])
 
         scheduler = DDIMScheduler(
             beta_start=0.00085, beta_end=0.012, beta_schedule="scaled_linear",
