@@ -1,0 +1,29 @@
+= API 문서
+:toc: left
+:toclevels: 2
+
+== 사용자 관리 API
+
+=== 예제 이미지 요청
+
+include::{snippets}/example-image/http-request.adoc[]
+
+include::{snippets}/example-image/http-response.adoc[]
+
+=== 이미지 생성 요청
+
+include::{snippets}/generate-images/http-request.adoc[]
+
+include::{snippets}/generate-images/http-response.adoc[]
+
+=== 프로젝트 조회 요청
+
+include::{snippets}/get-projects/http-request.adoc[]
+
+include::{snippets}/get-projects/http-response.adoc[]
+
+=== 특정 프로젝트 조회 요청
+
+include::{snippets}/get-project/http-request.adoc[]
+
+include::{snippets}/get-project/http-response.adoc[]
