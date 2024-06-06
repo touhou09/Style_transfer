@@ -1,5 +1,7 @@
 ### API 문서
 
+---
+
 ### ProjectController
 
 #### 엔드포인트: 프로젝트 목록 조회
@@ -82,8 +84,9 @@
       "projectId": "12345",
       "generatedItems": [
         {
-          "imageUrl": "https://example.com/image1.jpg",
-          "description": "Description of image 1"
+          "index": 0,
+          "promptText": "Generate an image of a sunset",
+          "generatedImage": "generated image string"
         }
       ],
       "time": "2023-06-03T12:00:00"
@@ -92,9 +95,11 @@
 
   - **Status**: 404 Not Found (프로젝트가 존재하지 않을 경우)
 
+---
+
 ### exampleImageController
 
-#### 엔드포인트: 이미지 생성 요청
+#### 엔드포인트: 예시 이미지 요청
 
 - **URL**: `/api/images`
 - **Method**: POST
@@ -111,11 +116,10 @@
   - `page` (int): 요청 페이지 번호 (0부터 시작)
   - `size` (int): 페이지당 항목 수
 
-- **Request Example**:
-  ```
-  POST /api/images?page=0&size=10
-  Content-Type: application/json
-
+- **Request Example**:  
+POST /api/images?page=0&size=10  
+Content-Type: application/json
+  ```json
   {
     "text": "example text"
   }
@@ -128,8 +132,8 @@
     {
       "content": [
         {
-          "imageUrl": "https://example.com/generatedImage1.jpg",
-          "description": "Generated image 1"
+          "id": "https://example.com/generatedImage1.jpg",
+          "data": "Generated image 1"
         }
       ],
       "pageable": {
@@ -191,7 +195,8 @@
       "empty": true
     }
     ```
-
+    
+--- 
 ### ImageGenerationController
 
 #### 엔드포인트: 이미지 생성
