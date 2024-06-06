@@ -1,9 +1,4 @@
 # Model server guide
-```　bash
-pip install -r requirements.txt
-```
-
-requirements.txt 추후 업데이트 예정
 
 ## Environment Setup
 
