@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from typing import List
 from models import GeneratedImageResponseDto, PromptRequestDto, basicItem, generatedItem
 import ai
-import dummy.ai_dummy
+# import dummy.ai_dummy
 import json
 # 라우터 인스턴스 생성
 router = APIRouter()
