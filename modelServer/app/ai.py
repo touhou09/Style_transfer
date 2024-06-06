@@ -4,7 +4,7 @@ def ai(get_data):
     
     gpt_client = init_gpt_client(gpt_api_key = 'put your personal api key!')
     
-    diffusion_pipeline, clip_model, preprocess, device = init_models(clip_model_name = 'ViT-B/32')
+    clip_model, preprocess, device = init_clip(clip_model_name = 'ViT-B/32')
     
     genre_list = ["horror", "romance", "fantasy", "science fiction", "thriller", "adventure", "mystery"]
     
@@ -29,18 +29,20 @@ def ai(get_data):
 
         ret_dict = get_dict_for_retrieval(summarized_prompt[0], topk_img_path_list, encoded_base64_images)
         
-        ### for debugging
-        # for k, v in ret_dict.items():
-        #     print(f"key: {k}")
-        #     if k =='summarizedExampleText':
-        #         print(v)
-        #     print(f"type of val: {type(v)}")
-        ###
-        
         return ret_dict
 
     elif received_dict['task'] == 'generation':
         print('generation start')
+
+
+        scheduler = DDIMScheduler(
+            beta_start=0.00085, beta_end=0.012, beta_schedule="scaled_linear",
+            clip_sample=False, set_alpha_to_one=False)
+        
+        diffusion_pipeline = StableDiffusionXLPipeline.from_pretrained(
+            "stabilityai/stable-diffusion-xl-base-1.0", torch_dtype=torch.float16, variant="fp16",
+            use_safetensors=True, scheduler=scheduler).to(device)
+        
         ref_image_path = received_dict['id']
 
         project_id = received_dict['projectId']
