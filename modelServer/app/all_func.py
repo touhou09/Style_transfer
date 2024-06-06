@@ -47,23 +47,12 @@ def get_genre_image_dataloader(preprocess, image_path_list, batch_size):
 
 # ======================================= initialization =======================================
 
-def init_models(clip_model_name = 'ViT-B/32'):
+def init_clip(clip_model_name = 'ViT-B/32'):
     
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    scheduler = DDIMScheduler(
-    beta_start=0.00085, beta_end=0.012, beta_schedule="scaled_linear",
-    clip_sample=False, set_alpha_to_one=False)
-
-    diffusion_pipeline = StableDiffusionXLPipeline.from_pretrained(
-        "stabilityai/stable-diffusion-xl-base-1.0", torch_dtype=torch.float16, variant="fp16",
-        use_safetensors=True,
-        scheduler=scheduler
-    ).to(device)
-    
-
     clip_model, preprocess = clip.load(clip_model_name, device=device)
     
-    return diffusion_pipeline, clip_model, preprocess, device
+    return clip_model, preprocess, device
 
 def init_image_tensor_retrieval(clip_model, preprocess, genre_list, device,
                                 batch_size=1024, root_path_retrieval='./top5000_images'):
