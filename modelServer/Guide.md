@@ -7,7 +7,7 @@ requirements.txt 추후 업데이트 예정
 
 ## Environment Setup
 
-''' bash
+```　bash
 conda create -n visual_fable python=3.9
 conda activate visual_fable
 pip install torch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2 --index-url https://download.pytorch.org/whl/cu118
@@ -15,7 +15,7 @@ pip install diffusers mediapy einops transformers accelerate ftfy regex tqdm pan
 pip install git+https://github.com/openai/CLIP.git
 pip install openai
 pip install pyarrow
-'''
+```
 
 
 ## retrieval
