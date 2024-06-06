@@ -2,7 +2,7 @@ from all_func import *
 
 def ai(get_data):
     
-    gpt_client = init_gpt_client(gpt_api_key = 'sk-proj-QFbBChFKMOdqq51HXCqhT3BlbkFJqaFNb2xdKrMWgDAriBHy')
+    gpt_client = init_gpt_client(gpt_api_key = 'put your personal api key!')
     
     diffusion_pipeline, clip_model, preprocess, device = init_models(clip_model_name = 'ViT-B/32')
     
