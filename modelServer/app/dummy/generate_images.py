@@ -1,7 +1,6 @@
 from fastapi import APIRouter
 from typing import List
 from models import GeneratedImageResponseDto, PromptRequestDto, basicItem, generatedItem
-import ai
 import json
 import ai_dummy
 # 라우터 인스턴스 생성
@@ -15,7 +14,7 @@ async def generate_images(request: PromptRequestDto) -> GeneratedImageResponseDt
     
     # ai 함수 호출
     result = ai_dummy.ai(data)
-    
+
     # with open('generated_output_example.json', 'w') as f:
     #     json.dump(result, f)
 

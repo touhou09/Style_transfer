@@ -1,4 +1,3 @@
-from all_func import *
 import json
 def ai(get_data):
 
