@@ -59,6 +59,33 @@ java -jar build/libs/transfer.jar
 ```
 
 ---
+
+### Model Server
+#### Environment Setup
+
+```　bash
+conda create -n visual_fable python=3.9
+conda activate visual_fable
+pip install torch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2 --index-url https://download.pytorch.org/whl/cu118
+pip install diffusers mediapy einops transformers accelerate ftfy regex tqdm pandas
+pip install git+https://github.com/openai/CLIP.git
+pip install openai
+pip install pyarrow
+pip install fastapi uvicorn pydantic sqlalchemy databases alembic asyncpg
+
+
+
+or refer requirements.txt
+```
+
+#### start server (where main.py is located)
+```　bash
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+```
+<br>
+
+---
+
 ### 기능별 API 및 그 흐름
 
 #### 예시 이미지 생성
