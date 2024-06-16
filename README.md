@@ -57,10 +57,10 @@ gradlew.bat clean build
 ```sh
 java -jar build/libs/transfer.jar
 ```
-
----
+<hr>
 
 ### Model Server
+
 #### Environment Setup
 
 ```　bash
